@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BMT — Risk-First Options Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:     #0A1628;
+    --navy-mid: #112240;
+    --navy-lt:  #1A2F55;
+    --gold:     #C9A84C;
+    --gold-lt:  #E8C96A;
+    --gold-dim: #8A6B28;
+    --red:      #C0392B;
+    --red-lt:   #E74C3C;
+    --white:    #F4F1EA;
+    --muted:    #8A99B4;
+    --border:   rgba(201,168,76,0.2);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 5%;
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+  .logo span { color: var(--white); }
+  nav ul { display: flex; gap: 2rem; list-style: none; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.05em; transition: color 0.2s; }
+  nav a:hover { color: var(--gold); }
+  .nav-cta {
+    background: var(--gold); color: var(--navy) !important;
+    padding: 0.5rem 1.25rem; border-radius: 4px; font-weight: 600 !important;
+  }
+  .nav-cta:hover { background: var(--gold-lt); color: var(--navy) !important; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 8rem 5% 5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(17,34,64,0.9), var(--navy));
+    z-index: 0;
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.06;
+    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 720px; }
+
+  .hero-badge {
+    display: inline-block;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.35rem 1rem; border-radius: 2px; margin-bottom: 2rem;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 900; line-height: 1.1;
+    color: var(--white); margin-bottom: 1.5rem;
+  }
+  h1 em { font-style: normal; color: var(--gold); }
+  .hero-sub {
+    font-size: 1.125rem; color: var(--muted); max-width: 560px;
+    margin-bottom: 2.5rem; font-weight: 300; line-height: 1.8;
+  }
+  .hero-sub strong { color: var(--white); font-weight: 500; }
+
+  .urgency-bar {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: rgba(192,57,43,0.12); border: 1px solid rgba(192,57,43,0.4);
+    border-radius: 4px; padding: 0.6rem 1rem; margin-bottom: 2rem;
+    font-size: 0.85rem; color: #e88a80;
+  }
+  .urgency-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red-lt);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  .btn-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: var(--navy);
+    padding: 0.85rem 2rem; border-radius: 4px;
+    font-weight: 700; font-size: 1rem; text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-lt); transform: translateY(-1px); }
+  .btn-secondary {
+    border: 1px solid var(--border); color: var(--gold);
+    padding: 0.85rem 2rem; border-radius: 4px;
+    font-size: 1rem; text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--gold); }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem;
+    border-top: 1px solid var(--border); padding-top: 2rem;
+  }
+  .stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 700; color: var(--gold);
+  }
+  .stat-lbl { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.2rem; }
+
+  /* ─── SECTION SHARED ─── */
+  section { padding: 6rem 5%; }
+  .section-label {
+    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold-dim); margin-bottom: 0.75rem;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700;
+    line-height: 1.2; margin-bottom: 1rem;
+  }
+  .section-intro { color: var(--muted); max-width: 560px; font-size: 1.05rem; font-weight: 300; line-height: 1.8; }
+
+  /* ─── PAIN SECTION ─── */
+  .pain { background: var(--navy-mid); }
+  .pain-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem; margin-top: 3rem;
+  }
+  .pain-card {
+    border: 1px solid rgba(192,57,43,0.25);
+    background: rgba(192,57,43,0.06);
+    border-radius: 6px; padding: 1.5rem;
+  }
+  .pain-icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+  .pain-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: #e88a80; }
+  .pain-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+
+  /* ─── WHY BMT ─── */
+  .why-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center; margin-top: 3rem;
+  }
+  .why-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .why-item { display: flex; gap: 1rem; align-items: flex-start; }
+  .why-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 900; color: var(--gold);
+    line-height: 1; min-width: 2rem;
+  }
+  .why-item h3 { font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 0.3rem; }
+  .why-item p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+  .credentials-box {
+    background: var(--navy-lt); border: 1px solid var(--border);
+    border-radius: 8px; padding: 2rem;
+  }
+  .credentials-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; color: var(--gold); margin-bottom: 1.5rem;
+  }
+  .cred-item {
+    display: flex; gap: 0.75rem; margin-bottom: 1.25rem; align-items: flex-start;
+  }
+  .cred-badge {
+    background: rgba(201,168,76,0.12); border: 1px solid var(--gold-dim);
+    color: var(--gold); font-size: 0.72rem; font-weight: 700;
+    padding: 0.3rem 0.5rem; border-radius: 3px; white-space: nowrap;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .cred-text { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+  /* ─── FREE RESOURCES ─── */
+  .resources { background: var(--navy-mid); }
+  .resources-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem; margin-top: 3rem;
+  }
+  .resource-card {
+    background: var(--navy); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.75rem;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none; display: block;
+  }
+  .resource-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+  .resource-tag {
+    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gold-dim); margin-bottom: 0.75rem;
+  }
+  .resource-card h3 { font-size: 1.05rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; line-height: 1.4; }
+  .resource-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+  .resource-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-top: 1rem; font-size: 0.85rem; color: var(--gold); font-weight: 600;
+  }
+
+  /* ─── EMAIL CAPTURE ─── */
+  .email-section {
+    background: linear-gradient(135deg, var(--navy-lt) 0%, #0d1e38 100%);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .email-inner {
+    max-width: 640px; margin: 0 auto; text-align: center;
+  }
+  .scarcity-note {
+    display: inline-block;
+    background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.4);
+    color: #e88a80; font-size: 0.8rem; padding: 0.4rem 1rem;
+    border-radius: 3px; margin-bottom: 1.5rem; letter-spacing: 0.05em;
+  }
+  .email-form {
+    display: flex; gap: 0; margin-top: 2rem; max-width: 480px; margin-left: auto; margin-right: auto;
+  }
+  .email-form input {
+    flex: 1; padding: 0.9rem 1.25rem;
+    background: var(--navy); border: 1px solid var(--border);
+    border-right: none; border-radius: 4px 0 0 4px;
+    color: var(--white); font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .email-form input::placeholder { color: var(--muted); }
+  .email-form input:focus { border-color: var(--gold); }
+  .email-form button {
+    background: var(--red); color: #fff;
+    border: none; padding: 0.9rem 1.5rem;
+    border-radius: 0 4px 4px 0; font-weight: 700;
+    font-size: 0.95rem; cursor: pointer; white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s;
+  }
+  .email-form button:hover { background: var(--red-lt); }
+  .email-note { font-size: 0.78rem; color: var(--muted); margin-top: 0.75rem; }
+  .success-msg {
+    display: none; color: var(--gold); font-size: 1rem;
+    margin-top: 1.5rem; font-weight: 500;
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem; margin-top: 3rem;
+  }
+  .testi-card {
+    background: var(--navy-lt); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.75rem;
+  }
+  .stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 0.75rem; letter-spacing: 2px; }
+  .testi-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.8; margin-bottom: 1rem; font-style: italic; }
+  .testi-author { font-size: 0.85rem; font-weight: 600; color: var(--white); }
+  .testi-role { font-size: 0.78rem; color: var(--muted); }
+
+  /* ─── FINAL CTA ─── */
+  .final-cta {
+    text-align: center; padding: 7rem 5%;
+    background: var(--navy-mid);
+  }
+  .final-cta h2 { margin-bottom: 1rem; }
+  .final-cta p { color: var(--muted); max-width: 500px; margin: 0 auto 2.5rem; font-size: 1.05rem; font-weight: 300; }
+  .countdown {
+    display: flex; justify-content: center; gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .cd-block { text-align: center; }
+  .cd-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem; font-weight: 900; color: var(--red-lt);
+    display: block; line-height: 1;
+  }
+  .cd-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 2.5rem 5%;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer p { font-size: 0.8rem; color: var(--muted); }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .why-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 2rem; }
+    nav ul { display: none; }
+    .email-form { flex-direction: column; }
+    .email-form input { border-right: 1px solid var(--border); border-radius: 4px; border-bottom: none; border-radius: 4px 4px 0 0; }
+    .email-form button { border-radius: 0 0 4px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="logo">B<span>MT</span></div>
+  <ul>
+    <li><a href="#why">About</a></li>
+    <li><a href="#resources">Free Resources</a></li>
+    <li><a href="#email">Newsletter</a></li>
+    <li><a href="#email" class="nav-cta">Join Free</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <span class="hero-badge">Risk-First Options Education</span>
+    <h1>Stop Gambling.<br>Start <em>Engineering</em><br>Your Trades.</h1>
+    <p class="hero-sub">
+      Most traders lose because they treat options like a lottery ticket.
+      <strong>BMT applies process safety principles from chemical engineering</strong> —
+      where a single miscalculation can cost everything — to build a systematic,
+      risk-first approach to options trading.
+    </p>
+    <div class="urgency-bar">
+      <div class="urgency-dot"></div>
+      Most retail options traders lose over 70% of their capital within 12 months. Are you next?
+    </div>
+    <div class="btn-row">
+      <a href="#email" class="btn-primary">Get Free Access →</a>
+      <a href="#resources" class="btn-secondary">Explore Resources</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-val">6+</div>
+        <div class="stat-lbl">Years Trading</div>
+      </div>
+      <div>
+        <div class="stat-val">0</div>
+        <div class="stat-lbl">Margin Calls</div>
+      </div>
+      <div>
+        <div class="stat-val">100%</div>
+        <div class="stat-lbl">Risk-Defined Methods</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PAIN SECTION ─── -->
+<section class="pain">
+  <div class="section-label">The Problem</div>
+  <h2>The Market Is Designed<br>to Take Your Money</h2>
+  <p class="section-intro">Wall Street profits from your confusion. These are the traps destroying your portfolio right now.</p>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">⚠</div>
+      <h3>Undefined Risk Trades</h3>
+      <p>Selling naked options or ignoring theta decay exposes you to catastrophic, account-ending losses — often in a single bad morning.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⚠</div>
+      <h3>No Position Sizing Rules</h3>
+      <p>Putting 30% of your account into one "sure thing" isn't confidence — it's the behavior that wipes out 90% of retail traders.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⚠</div>
+      <h3>Chasing Returns, Not Systems</h3>
+      <p>FOMO-driven trades feel right in the moment. They compound into a slow, predictable account bleed that most traders never diagnose.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⚠</div>
+      <h3>No Exit Framework</h3>
+      <p>Entering a trade without a pre-defined exit is like starting a chemical reaction without knowing how to stop it. Both end in disaster.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHY BMT ─── -->
+<section class="why" id="why">
+  <div class="section-label">The BMT Difference</div>
+  <div class="why-grid">
+    <div>
+      <h2>Built by an Engineer.<br>Tested by the Market.</h2>
+      <p class="section-intro" style="margin-bottom: 2rem;">I'm not a guru. I'm a chemical engineer who spent 15+ years managing catastrophic risk in industrial systems — then applied that same discipline to 6 years of options trading.</p>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="why-num">01</div>
+          <div>
+            <h3>Process Safety Meets Market Risk</h3>
+            <p>In process safety, we use bowtie models, fault trees, and layers of protection. BMT applies these same frameworks to option spreads, position sizing, and drawdown control.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">02</div>
+          <div>
+            <h3>No Hype — Only Probability</h3>
+            <p>We use expected value, defined risk, and statistical edge — not gut feelings, influencer picks, or "hot sectors." Logic is the only edge that compounds.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">03</div>
+          <div>
+            <h3>Asymmetric Risk Design</h3>
+            <p>Every trade structure taught at BMT limits downside to a known quantity while keeping upside open. Never risk more than you pre-plan to lose.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="credentials-box">
+      <h3>Credentials & Background</h3>
+      <div class="cred-item">
+        <span class="cred-badge">Eng</span>
+        <span class="cred-text">Chemical Engineer with 15+ years in process safety, hazard analysis, and risk quantification for industrial systems.</span>
+      </div>
+      <div class="cred-item">
+        <span class="cred-badge">6 Yrs</span>
+        <span class="cred-text">Six years of active stock and options trading with a consistent focus on defined-risk strategies and capital preservation.</span>
+      </div>
+      <div class="cred-item">
+        <span class="cred-badge">System</span>
+        <span class="cred-text">Developed a proprietary Risk Layer Framework adapted from industrial LOPA (Layers of Protection Analysis) methodology.</span>
+      </div>
+      <div class="cred-item">
+        <span class="cred-badge">Free</span>
+        <span class="cred-text">Committed to making institutional-grade risk thinking accessible to every retail trader — starting with free educational content.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FREE RESOURCES ─── -->
+<section class="resources" id="resources">
+  <div class="section-label">Free Education</div>
+  <h2>Everything You Need<br>to Trade Smarter — Free</h2>
+  <p class="section-intro">No upsells hidden behind these links. These are the real frameworks, tools, and lessons that changed how I trade.</p>
+  <div class="resources-grid">
+
+    <a href="#email" class="resource-card">
+      <div class="resource-tag">Guide · Beginner</div>
+      <h3>The 5 Risk Layers Every Options Trader Must Have</h3>
+      <p>Adapted from industrial safety management, this framework tells you exactly how much risk you're carrying in any position at any time.</p>
+      <span class="resource-link">Read Free →</span>
+    </a>
+
+    <a href="#email" class="resource-card">
+      <div class="resource-tag">Video · Intermediate</div>
+      <h3>Why Most Spreads Fail: A Bowtie Analysis of Common Trades</h3>
+      <p>Using the same fault-tree method used in chemical plants, we dissect three common losing trades and show what the real failure point was.</p>
+      <span class="resource-link">Watch Free →</span>
+    </a>
+
+    <a href="#email" class="resource-card">
+      <div class="resource-tag">Tool · All Levels</div>
+      <h3>Position Sizing Calculator: The BMT Method</h3>
+      <p>Input your account size and risk tolerance. Get exact contract counts, max loss, and probability-weighted expected value instantly.</p>
+      <span class="resource-link">Use Free →</span>
+    </a>
+
+    <a href="#email" class="resource-card">
+      <div class="resource-tag">Newsletter · Weekly</div>
+      <h3>The Risk Brief: Weekly Market Risk Assessment</h3>
+      <p>Every Sunday, I publish a structured risk review of market conditions — not trade picks, but an honest probability landscape to plan your week.</p>
+      <span class="resource-link">Subscribe Free →</span>
+    </a>
+
+    <a href="https://www.tastylive.com" target="_blank" rel="noopener" class="resource-card">
+      <div class="resource-tag">External · Video Library</div>
+      <h3>tastylive: Options Education From Professionals</h3>
+      <p>Hours of free, research-backed content on options mechanics, volatility, and probability. One of the most credible free resources available.</p>
+      <span class="resource-link">Visit tastylive →</span>
+    </a>
+
+    <a href="https://www.optionsplaybook.com" target="_blank" rel="noopener" class="resource-card">
+      <div class="resource-tag">External · Reference</div>
+      <h3>The Options Playbook: Every Strategy Explained</h3>
+      <p>A comprehensive, free reference covering every major options strategy — risk profiles, payoff diagrams, and when to use each one.</p>
+      <span class="resource-link">Visit Playbook →</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- ─── EMAIL CAPTURE ─── -->
+<section class="email-section" id="email">
+  <div class="email-inner">
+    <div class="scarcity-note">⚡ Limited Early Access — Join Before We Go Paid</div>
+    <div class="section-label">Free Inner Circle</div>
+    <h2>Get the Risk Brief<br>Before Anyone Else</h2>
+    <p style="color: var(--muted); font-weight: 300; font-size: 1.05rem; margin-top: 1rem; line-height: 1.8;">
+      Join traders who are building wealth systematically — not gambling with it.
+      Get weekly market risk breakdowns, framework guides, and early access
+      to every BMT resource. <strong style="color:var(--white)">Free. Forever. No spam.</strong>
+    </p>
+    <div class="email-form">
+      <input type="email" id="emailInput" placeholder="your@email.com" />
+      <button onclick="handleSignup()">Claim My Spot</button>
+    </div>
+    <p class="email-note">Join 0 traders already inside. Unsubscribe anytime.</p>
+    <p class="success-msg" id="successMsg">✓ You're in. Check your inbox for your first Risk Brief.</p>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<section id="testimonials">
+  <div class="section-label">Early Feedback</div>
+  <h2>What Traders Are Saying</h2>
+  <div class="testimonials-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"The engineering mindset completely changed how I look at a trade setup. I stopped sizing by feel and started sizing by math. First month using the framework, I had zero blowup trades."</p>
+      <div class="testi-author">R. Alvarez</div>
+      <div class="testi-role">Retail Trader, 3 years experience</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"I've paid thousands for courses that never once mentioned position-level risk management this clearly. BMT gave me more clarity for free than anything I've paid for."</p>
+      <div class="testi-author">M. Chen</div>
+      <div class="testi-role">Former student of a major options course</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"The bowtie analysis video broke my brain — in a good way. I could finally see WHY my bull put spreads kept failing. It wasn't bad luck. It was poor structure."</p>
+      <div class="testi-author">T. Williams</div>
+      <div class="testi-role">Software engineer turned part-time trader</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ─── -->
+<section class="final-cta">
+  <div class="section-label">Limited Time</div>
+  <h2>The Window to Join<br>Free Is Closing</h2>
+  <p>When BMT launches its premium course, the free tier ends. Secure your access now before pricing goes live.</p>
+  <div class="countdown">
+    <div class="cd-block"><span class="cd-num" id="cd-h">--</span><div class="cd-lbl">Hours</div></div>
+    <div class="cd-block"><span class="cd-num" id="cd-m">--</span><div class="cd-lbl">Minutes</div></div>
+    <div class="cd-block"><span class="cd-num" id="cd-s">--</span><div class="cd-lbl">Seconds</div></div>
+  </div>
+  <a href="#email" class="btn-primary" style="font-size:1.1rem; padding: 1rem 2.5rem;">Secure Free Access Now →</a>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="logo" style="font-size:1.2rem;">B<span style="color:var(--white)">MT</span></div>
+  <p>© 2025 BMT. Educational content only. Not financial advice.</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="#">Privacy</a>
+    <a href="#">Disclaimer</a>
+    <a href="#email">Contact</a>
+  </div>
+</footer>
+
+<script>
+  function handleSignup() {
+    const email = document.getElementById('emailInput').value;
+    if (!email || !email.includes('@')) {
+      document.getElementById('emailInput').style.borderColor = '#e74c3c';
+      return;
+    }
+    document.querySelector('.email-form').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    document.querySelector('.email-note').style.display = 'none';
+    console.log('Email captured:', email);
+  }
+
+  document.getElementById('emailInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleSignup();
+  });
+
+  // Countdown — 72 hours from page load
+  const end = new Date(Date.now() + 72 * 60 * 60 * 1000);
+  function tick() {
+    const now = new Date();
+    const diff = Math.max(0, end - now);
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  }
+  tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
