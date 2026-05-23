@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Candlesticks — BMT Classroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:     #0A1628;
+    --navy-mid: #112240;
+    --navy-lt:  #1A2F55;
+    --gold:     #C9A84C;
+    --gold-lt:  #E8C96A;
+    --gold-dim: #8A6B28;
+    --red:      #C0392B;
+    --red-lt:   #E74C3C;
+    --white:    #F4F1EA;
+    --muted:    #8A99B4;
+    --border:   rgba(201,168,76,0.2);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 5%;
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--gold); letter-spacing: 2px; text-decoration: none;
+  }
+  .logo span { color: var(--white); }
+  nav ul { display: flex; gap: 2rem; list-style: none; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.05em; transition: color 0.2s; }
+  nav a:hover { color: var(--gold); }
+  .nav-cta { background: var(--gold); color: var(--navy) !important; padding: 0.5rem 1.25rem; border-radius: 4px; font-weight: 600 !important; }
+  .nav-cta:hover { background: var(--gold-lt); }
+
+  /* HERO — split layout */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 7rem 5% 4rem;
+    gap: 4rem;
+    position: relative; overflow: hidden;
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.04;
+  }
+  .hero-text { position: relative; z-index: 1; }
+  .breadcrumb {
+    font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .breadcrumb a { color: var(--gold-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .level-badge {
+    display: inline-block;
+    border: 1px solid var(--gold-dim); color: var(--gold);
+    font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.3rem 0.9rem; border-radius: 2px; margin-bottom: 1.25rem;
+  }
+  .hero-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 900; line-height: 1.1;
+    color: var(--white); margin-bottom: 1rem;
+  }
+  .hero-text h1 em { font-style: normal; color: var(--gold); }
+  .hero-text p {
+    color: var(--muted); font-size: 1rem;
+    font-weight: 300; line-height: 1.8; max-width: 420px;
+    margin-bottom: 1.5rem;
+  }
+  .header-meta {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .meta-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--muted); }
+  .meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+
+  /* HERO CANDLE VISUAL */
+  .hero-visual {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .candle-explainer {
+    position: relative;
+    width: 320px; height: 420px;
+  }
+  .candle-explainer svg {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  /* annotation lines + labels */
+  .anno {
+    position: absolute;
+    display: flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+  }
+  .anno-line {
+    height: 1px; background: rgba(201,168,76,0.4);
+    flex-shrink: 0;
+  }
+  .anno-label {
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .anno-sub { font-size: 0.72rem; color: var(--muted); display: block; font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+  /* OHLC STRIP */
+  .ohlc-strip {
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 0; margin: 0; border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden;
+  }
+  .ohlc-item {
+    padding: 1.25rem 1rem;
+    border-right: 1px solid var(--border);
+    background: var(--navy-lt);
+    text-align: center;
+  }
+  .ohlc-item:last-child { border-right: none; }
+  .ohlc-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 900; color: var(--gold);
+    line-height: 1; margin-bottom: 0.3rem;
+  }
+  .ohlc-word { font-size: 0.85rem; font-weight: 600; color: var(--white); margin-bottom: 0.25rem; }
+  .ohlc-def { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+  /* CANDLE TYPE SECTION */
+  .section { padding: 5rem 5%; max-width: 960px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold-dim); margin-bottom: 0.5rem;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700;
+    line-height: 1.2; margin-bottom: 1rem; color: var(--white);
+  }
+
+  .type-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;
+  }
+  .type-card {
+    border-radius: 8px; padding: 1.5rem; border: 1px solid;
+    display: flex; gap: 1.25rem; align-items: flex-start;
+  }
+  .type-card.bull { border-color: rgba(34,160,107,0.35); background: rgba(34,160,107,0.07); }
+  .type-card.bear { border-color: rgba(226,75,74,0.35); background: rgba(226,75,74,0.07); }
+  .type-candle-mini { flex-shrink: 0; }
+  .type-card-text h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .type-card.bull .type-card-text h3 { color: #22a06b; }
+  .type-card.bear .type-card-text h3 { color: #e24b4a; }
+  .type-card-text p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+  .type-card-text p strong { color: var(--white); }
+
+  .callout {
+    background: rgba(201,168,76,0.06);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    padding: 1.1rem 1.4rem;
+    margin: 2rem 0;
+    font-size: 0.9rem; color: var(--muted); line-height: 1.75;
+  }
+  .callout strong { color: var(--white); }
+
+  /* TIME PERIOD ROW */
+  .period-row {
+    display: flex; gap: 8px; align-items: flex-end;
+    margin: 2rem 0; overflow-x: auto; padding-bottom: 0.5rem;
+  }
+  .period-candle { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+  .period-label { font-size: 0.68rem; color: var(--muted); }
+
+  /* GAME */
+  .game-section { background: var(--navy-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .game-inner-wrap { max-width: 960px; margin: 0 auto; padding: 4rem 5%; }
+  .game-container {
+    background: var(--navy-lt); border: 1px solid var(--border);
+    border-radius: 8px; padding: 2rem; margin-top: 2rem;
+  }
+  .game-container h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; color: var(--gold); margin-bottom: 0.4rem;
+  }
+  .game-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.75rem; line-height: 1.6; }
+  .mode-tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .mode-tab {
+    flex: 1; min-width: 100px; padding: 8px 12px; border-radius: 4px;
+    border: 1px solid var(--border); background: var(--navy-mid);
+    font-size: 0.82rem; cursor: pointer; color: var(--muted);
+    font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .mode-tab.active { background: var(--navy); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+  .game-play { display: flex; gap: 2.5rem; align-items: flex-start; flex-wrap: wrap; }
+
+  .drag-label {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 7px 16px; border-radius: 4px; border: 1px solid var(--border);
+    background: var(--navy-mid); font-size: 0.85rem; font-weight: 600;
+    cursor: grab; color: var(--gold); user-select: none;
+    transition: opacity 0.15s, border-color 0.15s;
+    min-width: 70px; font-family: 'DM Sans', sans-serif; letter-spacing: 0.05em;
+  }
+  .drag-label:hover { border-color: var(--gold); }
+  .drag-label:active { cursor: grabbing; opacity: 0.5; }
+  .drag-label.used { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
+
+  .drop-zone {
+    width: 90px; height: 30px; border-radius: 4px;
+    border: 1px dashed var(--gold-dim); background: rgba(201,168,76,0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; color: var(--muted);
+    transition: border-color 0.15s, background 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .drop-zone.over { border-color: var(--gold); background: rgba(201,168,76,0.12); }
+  .drop-zone.correct { border-color: #22a06b; background: rgba(34,160,107,0.15); color: #22a06b; font-weight: 600; border-style: solid; }
+  .drop-zone.wrong { border-color: var(--red-lt); background: rgba(231,76,60,0.12); color: var(--red-lt); animation: shake 0.3s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .game-controls { flex: 1; min-width: 200px; }
+  .label-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+  .score-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .score-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
+    background: var(--navy-mid); border: 1px solid var(--border);
+    color: var(--gold); font-family: 'DM Sans', sans-serif;
+  }
+  .btn-reset {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 5px 14px; border-radius: 4px;
+    cursor: pointer; font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-reset:hover { border-color: var(--gold); color: var(--gold); }
+  .feedback-area { margin-bottom: 1rem; min-height: 36px; }
+  .feedback-win {
+    font-size: 0.88rem; color: #22a06b;
+    background: rgba(34,160,107,0.1); border: 1px solid rgba(34,160,107,0.3);
+    border-radius: 4px; padding: 8px 14px;
+  }
+  .ref-title {
+    font-size: 0.72rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 10px; border-top: 1px solid var(--border); padding-top: 14px;
+  }
+  .def-card {
+    padding: 9px 13px; border-radius: 4px; border: 1px solid var(--border);
+    background: var(--navy-mid); font-size: 0.82rem; line-height: 1.6;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .def-card strong { color: var(--gold); }
+
+  /* LESSON NAV */
+  .lesson-nav-wrap { max-width: 960px; margin: 0 auto; padding: 0 5% 4rem; }
+  .lesson-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .lesson-nav a {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--gold); text-decoration: none; font-size: 0.88rem; font-weight: 600;
+    padding: 0.6rem 1.25rem; border: 1px solid var(--border);
+    border-radius: 4px; transition: border-color 0.2s, background 0.2s;
+  }
+  .lesson-nav a:hover { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+  .lesson-nav a.next { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+  .lesson-nav a.next:hover { background: var(--gold-lt); }
+
+  footer {
+    padding: 2.5rem 5%; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer p { font-size: 0.8rem; color: var(--muted); }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    nav ul { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 6rem; }
+    .hero-visual { display: none; }
+    .type-grid { grid-template-columns: 1fr; }
+    .ohlc-strip { grid-template-columns: 1fr 1fr; }
+    .ohlc-item:nth-child(2) { border-right: none; }
+    .ohlc-item:nth-child(3) { border-top: 1px solid var(--border); }
+    .ohlc-item:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+    .game-play { flex-direction: column; align-items: center; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav a { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">B<span>MT</span></a>
+  <ul>
+    <li><a href="/#why">About</a></li>
+    <li><a href="/#resources">Free Resources</a></li>
+    <li><a href="/#email">Newsletter</a></li>
+    <li><a href="/#email" class="nav-cta">Join Free</a></li>
+  </ul>
+</nav>
+
+<!-- HERO: text left, annotated candle right -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="breadcrumb">
+      <a href="/">BMT</a> &nbsp;/&nbsp; <a href="/#resources">Classroom</a> &nbsp;/&nbsp; Level 2
+    </div>
+    <div class="level-badge">Level 2 · Candlesticks</div>
+    <h1>A candlestick tells you <em>4 things.</em></h1>
+    <p>Where price started. Where it ended. How high it got. How low it went. That's all a candlestick is — a snapshot of price during a time period.</p>
+    <div class="header-meta">
+      <div class="meta-item"><div class="meta-dot"></div> Beginner</div>
+      <div class="meta-item"><div class="meta-dot"></div> Interactive game included</div>
+      <div class="meta-item"><div class="meta-dot"></div> ~10 min</div>
+    </div>
+  </div>
+
+  <!-- ANNOTATED CANDLE -->
+  <div class="hero-visual">
+    <!--
+      SVG coords: High y=8, Close y=55, Open y=205, Low y=258. ViewBox 0 0 100 300.
+      Container is 300px tall, top-offset = 50px (centered in 400px).
+      Label top = svgY + 50 - 18 (half label height ~18px) so the dash lines up to center of label.
+      High:  8  + 50 - 18 = 40px
+      Close: 55 + 50 - 18 = 87px
+      Open:  205 + 50 - 18 = 237px
+      Low:   258 + 50 - 18 = 290px
+    -->
+    <div style="position:relative; width:300px; height:400px;">
+      <!-- SVG candle, centered vertically in the 400px box -->
+      <svg viewBox="0 0 100 300" width="100" height="300"
+           style="position:absolute; left:50%; top:50px; overflow:visible;">
+        <line x1="50" y1="8"   x2="50" y2="55"  stroke="#8A99B4" stroke-width="3" stroke-linecap="round"/>
+        <rect x="22" y="55"  width="56" height="150" rx="3" fill="#22a06b"/>
+        <line x1="50" y1="205" x2="50" y2="258" stroke="#8A99B4" stroke-width="3" stroke-linecap="round"/>
+        <!-- dash lines go LEFT from x=0 toward the candle left edge -->
+        <line x1="-52" y1="8"   x2="22" y2="8"   stroke="rgba(201,168,76,0.45)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="-52" y1="55"  x2="22" y2="55"  stroke="rgba(201,168,76,0.45)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="-52" y1="205" x2="22" y2="205" stroke="rgba(201,168,76,0.45)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="-52" y1="258" x2="22" y2="258" stroke="rgba(201,168,76,0.45)" stroke-width="1" stroke-dasharray="3,2"/>
+      </svg>
+
+      <!-- LABELS — each pinned by top to match exact SVG y coordinate -->
+      <!-- High: y=8 → top = 8+50-18 = 40px -->
+      <div style="position:absolute; left:0; top:40px; display:flex; align-items:center; gap:6px;">
+        <div>
+          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); letter-spacing:0.08em; text-transform:uppercase; line-height:1;">High</div>
+          <div style="font-size:0.68rem; color:var(--muted); margin-top:2px;">Top of the wick</div>
+        </div>
+      </div>
+
+      <!-- Close: y=55 → top = 55+50-18 = 87px -->
+      <div style="position:absolute; left:0; top:87px; display:flex; align-items:center; gap:6px;">
+        <div>
+          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); letter-spacing:0.08em; text-transform:uppercase; line-height:1;">Close</div>
+          <div style="font-size:0.68rem; color:var(--muted); margin-top:2px;">Where price closed</div>
+        </div>
+      </div>
+
+      <!-- Open: y=205 → top = 205+50-18 = 237px -->
+      <div style="position:absolute; left:0; top:237px; display:flex; align-items:center; gap:6px;">
+        <div>
+          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); letter-spacing:0.08em; text-transform:uppercase; line-height:1;">Open</div>
+          <div style="font-size:0.68rem; color:var(--muted); margin-top:2px;">Where price started</div>
+        </div>
+      </div>
+
+      <!-- Low: y=258 → top = 258+50-18 = 290px -->
+      <div style="position:absolute; left:0; top:290px; display:flex; align-items:center; gap:6px;">
+        <div>
+          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); letter-spacing:0.08em; text-transform:uppercase; line-height:1;">Low</div>
+          <div style="font-size:0.68rem; color:var(--muted); margin-top:2px;">Bottom of the wick</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OHLC STRIP -->
+<div style="background:var(--navy); padding: 0 5%;">
+  <div style="max-width:960px; margin:0 auto; padding: 3rem 0;">
+    <div class="section-label">The Four Things Every Candle Shows</div>
+    <div class="ohlc-strip" style="margin-top:1rem;">
+      <div class="ohlc-item">
+        <div class="ohlc-letter">O</div>
+        <div class="ohlc-word">Open</div>
+        <div class="ohlc-def">Where price started</div>
+      </div>
+      <div class="ohlc-item">
+        <div class="ohlc-letter">H</div>
+        <div class="ohlc-word">High</div>
+        <div class="ohlc-def">The highest price reached</div>
+      </div>
+      <div class="ohlc-item">
+        <div class="ohlc-letter">L</div>
+        <div class="ohlc-word">Low</div>
+        <div class="ohlc-def">The lowest price reached</div>
+      </div>
+      <div class="ohlc-item">
+        <div class="ohlc-letter">C</div>
+        <div class="ohlc-word">Close</div>
+        <div class="ohlc-def">Where price closed</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CANDLE TYPES -->
+<div style="background:var(--navy-mid); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="section" style="padding-top:3.5rem; padding-bottom:3.5rem;">
+    <div class="section-label">Two Types of Candles</div>
+    <h2>The color tells you which way price moved.</h2>
+
+    <div class="type-grid">
+      <!-- BULLISH -->
+      <div class="type-card bull">
+        <div class="type-candle-mini">
+          <svg viewBox="0 0 40 120" width="40" height="120">
+            <line x1="20" y1="4"  x2="20" y2="22" stroke="#8A99B4" stroke-width="2" stroke-linecap="round"/>
+            <rect x="8" y="22" width="24" height="70" rx="2" fill="#22a06b"/>
+            <line x1="20" y1="92" x2="20" y2="112" stroke="#8A99B4" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="type-card-text">
+          <h3>Green — price went UP</h3>
+          <p>The open is at the <strong>bottom</strong> of the body. The close is at the <strong>top</strong>. Price started low and ended higher.</p>
+        </div>
+      </div>
+      <!-- BEARISH -->
+      <div class="type-card bear">
+        <div class="type-candle-mini">
+          <svg viewBox="0 0 40 120" width="40" height="120">
+            <line x1="20" y1="4"  x2="20" y2="22" stroke="#8A99B4" stroke-width="2" stroke-linecap="round"/>
+            <rect x="8" y="22" width="24" height="70" rx="2" fill="#e24b4a"/>
+            <line x1="20" y1="92" x2="20" y2="112" stroke="#8A99B4" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="type-card-text">
+          <h3>Red — price went DOWN</h3>
+          <p>The open is at the <strong>top</strong> of the body. The close is at the <strong>bottom</strong>. Price started high and ended lower.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIME PERIOD ROW -->
+    <div style="margin-top:2.5rem;">
+      <div class="section-label" style="margin-bottom:0.75rem;">Each candle = one time period</div>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1.25rem; line-height:1.7;">On a daily chart, each candle is one day. On a 1-hour chart, each candle is one hour. The candles below show 7 days of price action — each one is a full trading day.</p>
+      <div class="period-row">
+        <!-- 7 mini candles representing a week -->
+        <div class="period-candle">
+          <svg viewBox="0 0 28 80" width="28" height="80">
+            <line x1="14" y1="3" x2="14" y2="14" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="6" y="14" width="16" height="42" rx="2" fill="#22a06b"/>
+            <line x1="14" y1="56" x2="14" y2="70" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="period-label">Mon</div>
+        </div>
+        <div class="period-candle">
+          <svg viewBox="0 0 28 80" width="28" height="80">
+            <line x1="14" y1="5" x2="14" y2="18" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="6" y="18" width="16" height="32" rx="2" fill="#22a06b"/>
+            <line x1="14" y1="50" x2="14" y2="66" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="period-label">Tue</div>
+        </div>
+        <div class="period-candle">
+          <svg viewBox="0 0 28 80" width="28" height="80">
+            <line x1="14" y1="8" x2="14" y2="20" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="6" y="20" width="16" height="38" rx="2" fill="#e24b4a"/>
+            <line x1="14" y1="58" x2="14" y2="72" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="period-label">Wed</div>
+        </div>
+        <div class="period-candle">
+          <svg viewBox="0 0 28 80" width="28" height="80">
+            <line x1="14" y1="4" x2="14" y2="16" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="6" y="16" width="16" height="50" rx="2" fill="#e24b4a"/>
+            <line x1="14" y1="66" x2="14" y2="75" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="period-label">Thu</div>
+        </div>
+        <div class="period-candle">
+          <svg viewBox="0 0 28 80" width="28" height="80">
+            <line x1="14" y1="6" x2="14" y2="22" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="6" y="22" width="16" height="28" rx="2" fill="#22a06b"/>
+            <line x1="14" y1="50" x2="14" y2="64" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="period-label">Fri</div>
+        </div>
+        <div class="period-candle">
+          <svg viewBox="0 0 28 80" width="28" height="80">
+            <line x1="14" y1="10" x2="14" y2="20" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="6" y="20" width="16" height="44" rx="2" fill="#22a06b"/>
+            <line x1="14" y1="64" x2="14" y2="74" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="period-label">Mon</div>
+        </div>
+        <div class="period-candle">
+          <svg viewBox="0 0 28 80" width="28" height="80">
+            <line x1="14" y1="5" x2="14" y2="15" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="6" y="15" width="16" height="36" rx="2" fill="#e24b4a"/>
+            <line x1="14" y1="51" x2="14" y2="68" stroke="#8A99B4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="period-label">Tue</div>
+        </div>
+        <div style="display:flex; align-items:center; padding-left:4px;">
+          <div style="font-size:0.78rem; color:var(--muted); font-style:italic;">← 7 trading days</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      The thin lines above and below the colored body are called <strong>wicks</strong>. The top wick = the High. The bottom wick = the Low. The body in the middle = where price opened and closed.
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="game-section">
+  <div class="game-inner-wrap">
+    <div class="section-label">Test Yourself</div>
+    <h2>Now label it yourself.</h2>
+    <p style="color:var(--muted); font-size:0.9rem; margin-top:0.25rem;">Drag Open, Close, High, and Low to the right spot on the candle. Try all three modes.</p>
+
+    <div class="game-container">
+      <h3>Label the Candle</h3>
+      <p class="game-desc">Drag each label to the correct position. Wrong answers shake off — keep going until you get all 4.</p>
+
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="setMode('bullish')">Green candle</button>
+        <button class="mode-tab" onclick="setMode('bearish')">Red candle</button>
+        <button class="mode-tab" onclick="setMode('quiz')">Random quiz</button>
+      </div>
+
+      <div class="game-play">
+        <div>
+          <svg viewBox="0 0 160 340" width="160" height="340" style="overflow:visible;" aria-label="Candlestick with four label drop zones">
+            <line x1="80" y1="10" x2="80" y2="70" stroke="#8A99B4" stroke-width="3" stroke-linecap="round"/>
+            <rect id="candle-body" x="44" y="70" width="72" height="170" rx="4" fill="#22a06b"/>
+            <line x1="80" y1="240" x2="80" y2="310" stroke="#8A99B4" stroke-width="3" stroke-linecap="round"/>
+            <foreignObject x="-44" y="2"   width="94" height="34"><div class="drop-zone" id="dz-high"   ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'dz-high')">drop here</div></foreignObject>
+            <line x1="50" y1="17"  x2="80" y2="17"  stroke="rgba(201,168,76,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+            <foreignObject x="-44" y="62"  width="94" height="34"><div class="drop-zone" id="dz-top"    ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'dz-top')">drop here</div></foreignObject>
+            <line x1="50" y1="79"  x2="80" y2="79"  stroke="rgba(201,168,76,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+            <foreignObject x="-44" y="228" width="94" height="34"><div class="drop-zone" id="dz-bottom" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'dz-bottom')">drop here</div></foreignObject>
+            <line x1="50" y1="243" x2="80" y2="243" stroke="rgba(201,168,76,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+            <foreignObject x="-44" y="300" width="94" height="34"><div class="drop-zone" id="dz-low"    ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'dz-low')">drop here</div></foreignObject>
+            <line x1="50" y1="315" x2="80" y2="315" stroke="rgba(201,168,76,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+            <text id="candle-type-label" x="80" y="348" text-anchor="middle" font-size="11" fill="#8A99B4" font-family="DM Sans, sans-serif">green candle</text>
+          </svg>
+        </div>
+
+        <div class="game-controls">
+          <p style="font-size:0.82rem; color:var(--muted); margin-bottom:1rem;">Drag each label to the right spot.</p>
+          <div class="label-bank" id="label-bank">
+            <div class="drag-label" draggable="true" data-label="High"  ondragstart="dragStart(event)">High</div>
+            <div class="drag-label" draggable="true" data-label="Low"   ondragstart="dragStart(event)">Low</div>
+            <div class="drag-label" draggable="true" data-label="Open"  ondragstart="dragStart(event)">Open</div>
+            <div class="drag-label" draggable="true" data-label="Close" ondragstart="dragStart(event)">Close</div>
+          </div>
+          <div class="score-row">
+            <div class="score-badge">Score: <span id="score-txt">0 / 4</span></div>
+            <button class="btn-reset" onclick="resetGame()">Try again</button>
+          </div>
+          <div class="feedback-area" id="feedback-area"></div>
+          <div class="ref-title">Cheat Sheet</div>
+          <div class="def-card"><strong>High</strong> — The highest price. Top of the upper wick.</div>
+          <div class="def-card"><strong>Low</strong> — The lowest price. Bottom of the lower wick.</div>
+          <div class="def-card" id="def-open"></div>
+          <div class="def-card" id="def-close"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LESSON NAV -->
+<div class="lesson-nav-wrap">
+  <div class="lesson-nav">
+    <a href="/#resources">← Back to Classroom</a>
+    <a href="#" class="next">Level 3: Uptrend →</a>
+  </div>
+</div>
+
+<footer>
+  <a href="/" class="logo" style="font-size:1.2rem;">B<span style="color:var(--white)">MT</span></a>
+  <p>© 2025 BMT. Educational content only. Not financial advice.</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="#">Privacy</a>
+    <a href="#">Disclaimer</a>
+    <a href="/#email">Contact</a>
+  </div>
+</footer>
+
+<script>
+  let draggedLabel = null;
+  let correct = 0;
+  let answered = {};
+  let currentMode = 'bullish';
+
+  const modes = {
+    bullish: {
+      color: '#22a06b', label: 'green candle',
+      answers: { 'dz-high': 'High', 'dz-top': 'Close', 'dz-bottom': 'Open', 'dz-low': 'Low' },
+      openDef:  '<strong>Open</strong> — Where price started. On a green candle, that\'s the <em>bottom</em> of the body.',
+      closeDef: '<strong>Close</strong> — Where price closed. On a green candle, that\'s the <em>top</em> of the body.'
+    },
+    bearish: {
+      color: '#e24b4a', label: 'red candle',
+      answers: { 'dz-high': 'High', 'dz-top': 'Open', 'dz-bottom': 'Close', 'dz-low': 'Low' },
+      openDef:  '<strong>Open</strong> — Where price started. On a red candle, that\'s the <em>top</em> of the body.',
+      closeDef: '<strong>Close</strong> — Where price closed. On a red candle, that\'s the <em>bottom</em> of the body.'
+    }
+  };
+
+  function setMode(m) {
+    document.querySelectorAll('.mode-tab').forEach((t,i) => {
+      t.classList.toggle('active', ['bullish','bearish','quiz'][i] === m);
+    });
+    currentMode = (m === 'quiz') ? (Math.random() > 0.5 ? 'bullish' : 'bearish') : m;
+    applyMode(); resetGame();
+  }
+
+  function applyMode() {
+    const cfg = modes[currentMode];
+    document.getElementById('candle-body').setAttribute('fill', cfg.color);
+    document.getElementById('candle-type-label').textContent = cfg.label;
+    document.getElementById('def-open').innerHTML = cfg.openDef;
+    document.getElementById('def-close').innerHTML = cfg.closeDef;
+  }
+
+  function dragStart(e) { draggedLabel = e.target.dataset.label; e.dataTransfer.effectAllowed = 'copy'; }
+  function dzOver(e) { e.preventDefault(); e.currentTarget.classList.add('over'); }
+  function dzLeave(e) { e.currentTarget.classList.remove('over'); }
+
+  function dzDrop(e, dzId) {
+    e.preventDefault();
+    const dz = document.getElementById(dzId);
+    dz.classList.remove('over');
+    if (!draggedLabel || answered[dzId]) return;
+    const isCorrect = modes[currentMode].answers[dzId] === draggedLabel;
+    dz.textContent = draggedLabel;
+    if (isCorrect) {
+      dz.classList.add('correct');
+      answered[dzId] = true; correct++;
+      markUsed(draggedLabel); updateScore();
+    } else {
+      dz.classList.add('wrong');
+      setTimeout(() => { dz.classList.remove('wrong'); dz.textContent = 'drop here'; }, 700);
+    }
+    draggedLabel = null;
+  }
+
+  function markUsed(label) {
+    document.querySelectorAll('.drag-label').forEach(el => {
+      if (el.dataset.label === label) el.classList.add('used');
+    });
+  }
+
+  function updateScore() {
+    document.getElementById('score-txt').textContent = correct + ' / 4';
+    if (correct === 4) {
+      document.getElementById('feedback-area').innerHTML =
+        '<div class="feedback-win">You got it. Now try the other candle color.</div>';
+    }
+  }
+
+  function resetGame() {
+    correct = 0; answered = {};
+    document.querySelectorAll('.drop-zone').forEach(dz => {
+      dz.textContent = 'drop here'; dz.classList.remove('correct','wrong','over');
+    });
+    document.querySelectorAll('.drag-label').forEach(el => el.classList.remove('used'));
+    document.getElementById('feedback-area').innerHTML = '';
+    document.getElementById('score-txt').textContent = '0 / 4';
+  }
+
+  applyMode();
+</script>
+</body>
+</html>
