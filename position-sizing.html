@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
   :root {
     --navy: #0e1628;
     --navy-mid: #131e35;
@@ -20,7 +20,7 @@
     --muted: #6b7a99;
     --grid-line: rgba(255,255,255,0.04);
   }
-
+ 
   body {
     background: var(--navy);
     color: var(--white);
@@ -29,8 +29,7 @@
     position: relative;
     overflow-x: hidden;
   }
-
-  /* Grid lines background */
+ 
   body::before {
     content: '';
     position: fixed;
@@ -42,8 +41,7 @@
     pointer-events: none;
     z-index: 0;
   }
-
-  /* ── Header ── */
+ 
   .header {
     position: relative;
     z-index: 10;
@@ -55,7 +53,7 @@
     background: rgba(14,22,40,0.85);
     backdrop-filter: blur(6px);
   }
-
+ 
   .breadcrumb {
     font-size: 11px;
     font-weight: 500;
@@ -66,16 +64,11 @@
     align-items: center;
     gap: 8px;
   }
-
-  .breadcrumb a {
-    color: var(--gold);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
+ 
+  .breadcrumb a { color: var(--gold); text-decoration: none; transition: color 0.15s; }
   .breadcrumb a:hover { color: var(--gold-light); }
   .breadcrumb .sep { color: var(--navy-border); }
-
+ 
   .badge {
     border: 1px solid var(--gold);
     color: var(--gold);
@@ -86,8 +79,7 @@
     padding: 4px 12px;
     border-radius: 2px;
   }
-
-  /* ── Main Layout ── */
+ 
   .container {
     position: relative;
     z-index: 1;
@@ -95,13 +87,12 @@
     margin: 0 auto;
     padding: 64px 60px 100px;
   }
-
-  /* ── Hero Text ── */
+ 
   .hero {
     margin-bottom: 64px;
     max-width: 560px;
   }
-
+ 
   .hero-label {
     font-size: 11px;
     font-weight: 500;
@@ -110,7 +101,7 @@
     text-transform: uppercase;
     margin-bottom: 16px;
   }
-
+ 
   .hero h1 {
     font-family: 'Playfair Display', serif;
     font-size: 52px;
@@ -120,12 +111,9 @@
     color: var(--white);
     margin-bottom: 20px;
   }
-
-  .hero h1 em {
-    color: var(--gold);
-    font-style: normal;
-  }
-
+ 
+  .hero h1 em { color: var(--gold); font-style: normal; }
+ 
   .hero-desc {
     font-size: 15px;
     font-weight: 300;
@@ -133,13 +121,9 @@
     line-height: 1.7;
     max-width: 420px;
   }
-
-  .meta-row {
-    display: flex;
-    gap: 24px;
-    margin-top: 20px;
-  }
-
+ 
+  .meta-row { display: flex; gap: 24px; margin-top: 20px; }
+ 
   .meta-item {
     font-size: 12px;
     color: var(--muted);
@@ -147,7 +131,7 @@
     align-items: center;
     gap: 6px;
   }
-
+ 
   .meta-item::before {
     content: '';
     width: 5px; height: 5px;
@@ -155,23 +139,21 @@
     background: var(--gold);
     flex-shrink: 0;
   }
-
-  /* ── Two-col layout ── */
+ 
   .two-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px;
     align-items: start;
   }
-
-  /* ── Input Panel ── */
+ 
   .panel {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
     border-radius: 4px;
     padding: 32px;
   }
-
+ 
   .panel-label {
     font-size: 10px;
     font-weight: 500;
@@ -182,13 +164,10 @@
     padding-bottom: 12px;
     border-bottom: 1px solid var(--navy-border);
   }
-
-  .field {
-    margin-bottom: 28px;
-  }
-
+ 
+  .field { margin-bottom: 28px; }
   .field:last-child { margin-bottom: 0; }
-
+ 
   .field-label {
     font-size: 11px;
     font-weight: 500;
@@ -198,7 +177,24 @@
     margin-bottom: 10px;
     display: block;
   }
-
+ 
+  /* linked risk row — two inputs side by side */
+  .risk-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+ 
+  .risk-divider {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.45;
+    text-align: center;
+    margin: 6px 0 2px;
+  }
+ 
   .field-input-row {
     display: flex;
     align-items: center;
@@ -209,11 +205,9 @@
     padding: 12px 16px;
     transition: border-color 0.15s;
   }
-
-  .field-input-row:focus-within {
-    border-color: var(--gold);
-  }
-
+ 
+  .field-input-row:focus-within { border-color: var(--gold); }
+ 
   .field-prefix, .field-suffix {
     font-family: 'Playfair Display', serif;
     font-size: 20px;
@@ -222,7 +216,7 @@
     user-select: none;
     line-height: 1;
   }
-
+ 
   input[type="number"] {
     background: transparent;
     border: none;
@@ -235,17 +229,20 @@
     -moz-appearance: textfield;
     line-height: 1;
   }
-
+ 
+  /* smaller font for the dollar loss field so long numbers fit */
+  .field-input-row.compact input[type="number"] { font-size: 22px; }
+ 
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-
+ 
   .field-hint {
     font-size: 11px;
     color: var(--muted);
     margin-top: 8px;
     opacity: 0.6;
   }
-
+ 
   .reset-link {
     font-size: 11px;
     color: var(--gold);
@@ -260,12 +257,24 @@
     display: inline-block;
     transition: opacity 0.15s;
   }
-
+ 
   .reset-link:hover { opacity: 1; }
-
-  /* ── Output Panel ── */
+ 
+  /* active source indicator */
+  .field-input-row.active-source { border-color: var(--gold); }
+  .source-tag {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-top: 5px;
+    display: none;
+  }
+  .source-tag.visible { display: block; }
+ 
   .output-panel { display: flex; flex-direction: column; gap: 16px; }
-
+ 
   .result-row {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
@@ -278,12 +287,12 @@
     position: relative;
     overflow: hidden;
   }
-
+ 
   .result-row.primary {
     border-color: var(--gold);
     background: rgba(201,168,76,0.05);
   }
-
+ 
   .result-row.primary::before {
     content: '';
     position: absolute;
@@ -291,7 +300,7 @@
     width: 3px;
     background: var(--gold);
   }
-
+ 
   .result-row.secondary::before {
     content: '';
     position: absolute;
@@ -299,9 +308,9 @@
     width: 3px;
     background: var(--muted);
   }
-
+ 
   .result-meta { flex: 1; }
-
+ 
   .result-type {
     font-size: 10px;
     font-weight: 500;
@@ -310,25 +319,25 @@
     color: var(--muted);
     margin-bottom: 4px;
   }
-
+ 
   .result-row.primary .result-type { color: var(--gold); }
-
+ 
   .result-name {
     font-family: 'Playfair Display', serif;
     font-size: 16px;
     font-weight: 700;
     color: var(--white);
   }
-
+ 
   .result-sub {
     font-size: 11px;
     color: var(--muted);
     margin-top: 3px;
     opacity: 0.6;
   }
-
+ 
   .result-value-wrap { text-align: right; flex-shrink: 0; }
-
+ 
   .result-value {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
@@ -337,9 +346,9 @@
     letter-spacing: -0.02em;
     line-height: 1;
   }
-
+ 
   .result-row.primary .result-value { color: var(--gold-light); }
-
+ 
   .result-pct {
     font-size: 11px;
     color: var(--muted);
@@ -347,8 +356,24 @@
     text-align: right;
     opacity: 0.6;
   }
-
-  /* ── Formula ── */
+ 
+  /* daily risk result card */
+  .result-row.risk-card {
+    background: rgba(192,57,43,0.06);
+    border-color: rgba(192,57,43,0.35);
+  }
+ 
+  .result-row.risk-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: #c0392b;
+  }
+ 
+  .result-row.risk-card .result-type { color: #e88a80; }
+  .result-row.risk-card .result-value { color: #e88a80; }
+ 
   .formula-section {
     margin-top: 32px;
     background: var(--navy-card);
@@ -356,7 +381,7 @@
     border-radius: 4px;
     padding: 28px 32px;
   }
-
+ 
   .formula-header {
     font-size: 10px;
     font-weight: 500;
@@ -367,13 +392,13 @@
     padding-bottom: 12px;
     border-bottom: 1px solid var(--navy-border);
   }
-
+ 
   .formula-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
   }
-
+ 
   .formula-item {
     padding: 12px 0;
     border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -381,11 +406,11 @@
     flex-direction: column;
     gap: 4px;
   }
-
+ 
   .formula-item:nth-child(odd) { padding-right: 32px; border-right: 1px solid rgba(255,255,255,0.04); }
   .formula-item:nth-child(even) { padding-left: 32px; }
   .formula-item:nth-last-child(-n+2) { border-bottom: none; }
-
+ 
   .formula-item-label {
     font-size: 10px;
     letter-spacing: 0.14em;
@@ -393,24 +418,24 @@
     color: var(--muted);
     opacity: 0.6;
   }
-
+ 
   .formula-item-eq {
     font-size: 11px;
     color: var(--muted);
     opacity: 0.5;
     font-style: italic;
   }
-
+ 
   .formula-item-val {
     font-family: 'Playfair Display', serif;
     font-size: 18px;
     font-weight: 700;
     color: var(--white);
   }
-
+ 
   .formula-item.gold .formula-item-val { color: var(--gold-light); }
-
-  /* ── Footer ── */
+  .formula-item.red .formula-item-val { color: #e88a80; }
+ 
   .footer {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -423,27 +448,16 @@
     background: rgba(14,22,40,0.95);
     backdrop-filter: blur(6px);
   }
-
-  .footer-brand {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    opacity: 0.5;
-  }
-
-  .footer-url {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--gold);
-    opacity: 0.6;
-    text-decoration: none;
-  }
-
+ 
+  .footer-brand { font-size: 11px; letter-spacing: 0.12em; color: var(--muted); opacity: 0.5; }
+  .footer-url { font-size: 11px; letter-spacing: 0.08em; color: var(--gold); opacity: 0.6; text-decoration: none; }
+ 
   @media (max-width: 768px) {
     .header { padding: 14px 24px; }
     .container { padding: 40px 24px 100px; }
     .hero h1 { font-size: 36px; }
     .two-col { grid-template-columns: 1fr; }
+    .risk-row { grid-template-columns: 1fr; }
     .formula-grid { grid-template-columns: 1fr; }
     .formula-item:nth-child(odd) { padding-right: 0; border-right: none; }
     .formula-item:nth-child(even) { padding-left: 0; }
@@ -454,7 +468,7 @@
 </style>
 </head>
 <body>
-
+ 
 <header class="header">
   <nav class="breadcrumb">
     <a href="https://bmtrading.online">BMT</a>
@@ -465,51 +479,76 @@
   </nav>
   <div class="badge">Members Only</div>
 </header>
-
+ 
 <main class="container">
-
+ 
   <div class="hero">
     <div class="hero-label">Risk Management</div>
     <h1>Size your position <em>right.</em></h1>
     <p class="hero-desc">
-      Enter your account balance and daily risk percentage. The calculator
-      handles the rest — governing position first, leveraged position second.
+      Enter your account balance and risk limit — either as a percentage or a dollar amount. The calculator handles the rest.
     </p>
     <div class="meta-row">
       <span class="meta-item">Real-time output</span>
       <span class="meta-item">Bryant's exact formula</span>
     </div>
   </div>
-
+ 
   <div class="two-col">
-
+ 
     <!-- Inputs -->
     <div class="panel">
       <div class="panel-label">Your Variables</div>
-
+ 
       <div class="field">
         <label class="field-label" for="balance">Account Balance</label>
         <div class="field-input-row">
           <span class="field-prefix">$</span>
-          <input type="number" id="balance" value="10000" min="0" step="100" oninput="calculate()">
+          <input type="number" id="balance" value="10000" min="0" step="100" oninput="onBalanceChange()">
         </div>
         <div class="field-hint">Your total trading capital</div>
       </div>
-
+ 
       <div class="field">
-        <label class="field-label" for="risk-pct">Daily Risk %</label>
-        <div class="field-input-row">
-          <input type="number" id="risk-pct" value="16.67" min="0.01" max="100" step="0.01" oninput="calculate()">
-          <span class="field-suffix">%</span>
+        <label class="field-label">Daily Risk Limit</label>
+        <div class="risk-row">
+          <!-- Percentage input -->
+          <div>
+            <div class="field-input-row" id="row-pct">
+              <input type="number" id="risk-pct" value="16.67" min="0.01" max="100" step="0.01" oninput="onPctChange()">
+              <span class="field-suffix">%</span>
+            </div>
+            <div class="source-tag" id="tag-pct">driving</div>
+          </div>
+          <!-- Dollar input -->
+          <div>
+            <div class="field-input-row compact" id="row-dollar">
+              <span class="field-prefix">$</span>
+              <input type="number" id="risk-dollar" value="1667" min="0" step="1" oninput="onDollarChange()">
+            </div>
+            <div class="source-tag" id="tag-dollar">driving</div>
+          </div>
         </div>
-        <div class="field-hint">Default: 1/6 of account (16.67%)</div>
+        <div class="field-hint" id="risk-hint">Default: 1/6 of account (16.67% · $1,667)</div>
         <button class="reset-link" onclick="resetRisk()">Reset to 1/6 default</button>
       </div>
     </div>
-
+ 
     <!-- Outputs -->
     <div class="output-panel">
-
+ 
+      <div class="result-row risk-card">
+        <div class="result-meta">
+          <div class="result-type">Max Loss Today</div>
+          <div class="result-name">Daily Risk Amount</div>
+          <div class="result-sub">The most you can lose today</div>
+        </div>
+        <div class="result-value-wrap">
+          <div class="result-value" id="out-risk">$0</div>
+          <div class="result-pct" id="out-risk-pct">—</div>
+        </div>
+      </div>
+ 
       <div class="result-row">
         <div class="result-meta">
           <div class="result-type">Total Trade Size</div>
@@ -521,7 +560,7 @@
           <div class="result-pct" id="out-total-pct">—</div>
         </div>
       </div>
-
+ 
       <div class="result-row primary">
         <div class="result-meta">
           <div class="result-type">Scale In 1</div>
@@ -533,7 +572,7 @@
           <div class="result-pct" id="out-si1-pct">—</div>
         </div>
       </div>
-
+ 
       <div class="result-row secondary">
         <div class="result-meta">
           <div class="result-type">Scale In 2</div>
@@ -545,16 +584,16 @@
           <div class="result-pct" id="out-si2-pct">—</div>
         </div>
       </div>
-
+ 
     </div>
   </div>
-
+ 
   <!-- Formula Breakdown -->
   <div class="formula-section">
     <div class="formula-header">Formula Breakdown</div>
     <div class="formula-grid">
-      <div class="formula-item">
-        <span class="formula-item-label">Daily Risk</span>
+      <div class="formula-item red">
+        <span class="formula-item-label">Daily Risk (Max Loss)</span>
         <span class="formula-item-eq">balance × risk%</span>
         <span class="formula-item-val" id="f-dr">—</span>
       </div>
@@ -575,52 +614,83 @@
       </div>
     </div>
   </div>
-
+ 
 </main>
-
+ 
 <footer class="footer">
   <span class="footer-brand">BM Trading © 2025</span>
   <a class="footer-url" href="https://bmtrading.online">bmtrading.online</a>
 </footer>
-
+ 
 <script>
   function fmt(n) {
     return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
-
+ 
   function pctOf(n, total) {
     if (!total) return '—';
     return ((n / total) * 100).toFixed(1) + '% of account';
   }
-
-  function calculate() {
-    const balance  = parseFloat(document.getElementById('balance').value)  || 0;
-    const riskPct  = parseFloat(document.getElementById('risk-pct').value) || 0;
-
-    const dailyRisk  = (riskPct / 100) * balance;
+ 
+  function getBalance() {
+    return parseFloat(document.getElementById('balance').value) || 0;
+  }
+ 
+  function calculate(dailyRisk) {
+    const balance    = getBalance();
     const totalTrade = dailyRisk / 0.40;
     const si1        = totalTrade - dailyRisk;
     const si2        = dailyRisk;
-
-    document.getElementById('out-total').textContent    = fmt(totalTrade);
+    const riskPct    = balance ? (dailyRisk / balance) * 100 : 0;
+ 
+    document.getElementById('out-risk').textContent      = fmt(dailyRisk);
+    document.getElementById('out-risk-pct').textContent  = pctOf(dailyRisk, balance);
+    document.getElementById('out-total').textContent     = fmt(totalTrade);
     document.getElementById('out-total-pct').textContent = pctOf(totalTrade, balance);
-    document.getElementById('out-si1').textContent      = fmt(si1);
-    document.getElementById('out-si1-pct').textContent  = pctOf(si1, balance);
-    document.getElementById('out-si2').textContent      = fmt(si2);
-    document.getElementById('out-si2-pct').textContent  = pctOf(si2, balance);
-
+    document.getElementById('out-si1').textContent       = fmt(si1);
+    document.getElementById('out-si1-pct').textContent   = pctOf(si1, balance);
+    document.getElementById('out-si2').textContent       = fmt(si2);
+    document.getElementById('out-si2-pct').textContent   = pctOf(si2, balance);
+ 
     document.getElementById('f-dr').textContent  = fmt(dailyRisk);
     document.getElementById('f-tt').textContent  = fmt(totalTrade);
     document.getElementById('f-si1').textContent = fmt(si1);
     document.getElementById('f-si2').textContent = fmt(si2);
+ 
+    document.getElementById('risk-hint').textContent =
+      riskPct.toFixed(2) + '% of account · ' + fmt(dailyRisk) + ' max loss';
   }
-
+ 
+  /* User typed in the % field — update $ field and calculate */
+  function onPctChange() {
+    const balance = getBalance();
+    const pct     = parseFloat(document.getElementById('risk-pct').value) || 0;
+    const dollar  = (pct / 100) * balance;
+    document.getElementById('risk-dollar').value = dollar.toFixed(2);
+    calculate(dollar);
+  }
+ 
+  /* User typed in the $ field — update % field and calculate */
+  function onDollarChange() {
+    const balance = getBalance();
+    const dollar  = parseFloat(document.getElementById('risk-dollar').value) || 0;
+    const pct     = balance ? (dollar / balance) * 100 : 0;
+    document.getElementById('risk-pct').value = pct.toFixed(2);
+    calculate(dollar);
+  }
+ 
+  /* Balance changed — recalculate using current % as source of truth */
+  function onBalanceChange() {
+    onPctChange();
+  }
+ 
   function resetRisk() {
     document.getElementById('risk-pct').value = '16.67';
-    calculate();
+    onPctChange();
   }
-
-  calculate();
+ 
+  /* Init */
+  onPctChange();
 </script>
 </body>
 </html>
