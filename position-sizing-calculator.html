@@ -137,7 +137,6 @@
     width: 100%; -moz-appearance: textfield; line-height: 1;
   }
   .field-input-row.compact input[type="number"] { font-size: 22px; }
-  .field-input-row.sm input[type="number"] { font-size: 20px; }
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
@@ -151,7 +150,6 @@
   }
   .reset-link:hover { opacity: 1; }
 
-  /* daily risk summary card */
   .risk-summary {
     background: var(--red-bg); border: 1px solid var(--red-border);
     border-radius: 4px; padding: 24px 28px;
@@ -168,7 +166,6 @@
   /* ── POSITION ROWS ── */
   .positions { display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
 
-  /* Each row = sizing card LEFT + delta card RIGHT */
   .position-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -178,7 +175,6 @@
     border: 1px solid var(--navy-border);
   }
 
-  /* left: sizing */
   .pos-sizing {
     background: var(--navy-card);
     padding: 24px 28px;
@@ -202,75 +198,63 @@
   .pos-sizing.green-accent .pos-sizing-val { color: var(--green-light); }
   .pos-sizing-pct { font-size:11px; color:var(--muted); text-align:right; margin-top:2px; opacity:0.6; }
 
-  /* right: delta */
+  /* ── DELTA PANEL ── */
   .pos-delta {
     background: var(--navy);
     padding: 20px 24px;
-    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    display: flex; flex-direction: column; gap: 14px;
   }
 
   .pos-delta-label {
     font-size: 10px; font-weight: 500; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--muted);
-    margin-bottom: 2px;
   }
 
-  .delta-input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    align-items: end;
-  }
-
-  .delta-field { display: flex; flex-direction: column; gap: 6px; }
-  .delta-field-label {
-    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); opacity: 0.6;
-  }
-
-  .delta-inp {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--navy-card); border: 1px solid var(--navy-border);
-    border-radius: 3px; padding: 8px 10px;
-    transition: border-color 0.15s;
-  }
-  .delta-inp:focus-within { border-color: var(--gold); }
-
-  .delta-inp .pre {
-    font-family: 'Playfair Display', serif; font-size: 14px;
-    color: var(--navy-border); flex-shrink: 0;
-  }
-
-  .delta-inp input[type="number"] {
-    font-size: 16px; font-weight: 700;
-  }
-
-  /* output chips */
-  .delta-outputs {
+  /* top row: avg cost + contracts (fixed inputs) */
+  .delta-base-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
 
-  .delta-chip {
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
-    border-radius: 3px;
-    padding: 10px 12px;
+  /* bottom row: the three bidirectional fields */
+  .delta-trio {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
   }
 
-  .delta-chip-label {
+  .delta-field { display: flex; flex-direction: column; gap: 5px; }
+
+  .delta-field-label {
     font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); opacity: 0.6; margin-bottom: 4px;
+    color: var(--muted); opacity: 0.7;
   }
 
-  .delta-chip-val {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px; font-weight: 700; line-height: 1;
+  /* active field gets a highlight ring */
+  .delta-inp {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--navy-card); border: 1px solid var(--navy-border);
+    border-radius: 3px; padding: 8px 10px;
+    transition: border-color 0.15s;
+    cursor: text;
   }
-  .delta-chip-val.pos { color: var(--green-light); }
-  .delta-chip-val.neg { color: var(--red-light); }
-  .delta-chip-val.neutral { color: var(--muted); }
+  .delta-inp:focus-within { border-color: var(--gold); }
+  .delta-inp.active-source { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+
+  .delta-inp .pre {
+    font-family: 'Playfair Display', serif; font-size: 13px;
+    color: var(--muted); flex-shrink: 0;
+  }
+
+  .delta-inp input[type="number"] {
+    font-size: 15px; font-weight: 700; color: var(--white);
+  }
+  .delta-inp input[type="number"]::placeholder { color: var(--muted); opacity: 0.4; }
+
+  /* colour the computed outputs */
+  .delta-inp.val-pos input[type="number"] { color: var(--green-light); }
+  .delta-inp.val-neg input[type="number"] { color: var(--red-light); }
 
   /* ── FORMULA ── */
   .formula-section {
@@ -285,13 +269,15 @@
   }
   .formula-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
   .formula-item {
-    padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 12px 24px 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-right: 1px solid rgba(255,255,255,0.04);
     display: flex; flex-direction: column; gap: 4px;
-    padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.04);
   }
   .formula-item:nth-child(3n) { padding-right: 0; border-right: none; padding-left: 24px; }
   .formula-item:nth-child(3n+2) { padding-left: 24px; }
   .formula-item:nth-last-child(-n+3) { border-bottom: none; }
+  .formula-item.span2 { grid-column: span 2; border-right: none; padding-right: 0; }
   .formula-item-label { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); opacity:0.6; }
   .formula-item-eq { font-size:11px; color:var(--muted); opacity:0.5; font-style:italic; }
   .formula-item-val { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--white); }
@@ -310,11 +296,11 @@
   .footer-brand { font-size:11px; letter-spacing:0.12em; color:var(--muted); opacity:0.5; }
   .footer-url { font-size:11px; letter-spacing:0.08em; color:var(--gold); opacity:0.6; text-decoration:none; }
 
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     .top-inputs { grid-template-columns: 1fr; }
     .position-row { grid-template-columns: 1fr; }
     .pos-sizing { border-right: none; border-bottom: 1px solid var(--navy-border); }
-    .delta-input-row { grid-template-columns: 1fr 1fr; }
+    .delta-trio { grid-template-columns: 1fr 1fr; }
     .formula-grid { grid-template-columns: 1fr 1fr; }
     .header { padding: 14px 24px; }
     .container { padding: 40px 24px 100px; }
@@ -342,7 +328,7 @@
     <div class="hero-label">Risk Management</div>
     <h1>Size your position <em>right.</em></h1>
     <p class="hero-desc">
-      Enter your account balance and risk limit. Each position shows your allocation and a live delta calculator to set your exact Robinhood order.
+      Enter your account balance and risk limit. Each position shows your allocation and a live delta calculator — edit any field and the other two update instantly.
     </p>
     <div class="meta-row">
       <span class="meta-item">Real-time output</span>
@@ -389,7 +375,7 @@
       <div class="risk-summary-meta">
         <div class="risk-summary-type">Max Loss Today</div>
         <div class="risk-summary-name">Daily Risk Amount</div>
-        <div class="risk-summary-sub" id="risk-sub">The most you can lose today</div>
+        <div class="risk-summary-sub">The most you can lose today</div>
       </div>
       <div>
         <div class="risk-summary-val" id="out-risk">$0</div>
@@ -415,37 +401,43 @@
         </div>
       </div>
       <div class="pos-delta">
-        <div class="pos-delta-label">Delta Calculator</div>
-        <div class="delta-input-row">
+        <div class="pos-delta-label">Delta Calculator — edit any field</div>
+        <div class="delta-base-row">
           <div class="delta-field">
-            <div class="delta-field-label">Avg Cost</div>
-            <div class="delta-inp">
+            <div class="delta-field-label">Avg Cost / Contract</div>
+            <div class="delta-inp" id="tp-avg-wrap">
               <span class="pre">$</span>
-              <input type="number" id="tp-avg" min="0" step="0.01" placeholder="0.00" oninput="calcDelta('tp')">
+              <input type="number" id="tp-avg" min="0" step="0.01" placeholder="0.00" oninput="onDeltaInput('tp','avg')">
             </div>
           </div>
           <div class="delta-field">
-            <div class="delta-field-label">Contracts</div>
+            <div class="delta-field-label">No. of Contracts</div>
             <div class="delta-inp">
-              <input type="number" id="tp-contracts" value="1" min="1" step="1" oninput="calcDelta('tp')">
-            </div>
-          </div>
-          <div class="delta-field">
-            <div class="delta-field-label">Target Delta</div>
-            <div class="delta-inp">
-              <span class="pre">$</span>
-              <input type="number" id="tp-delta" min="0" step="0.01" placeholder="0.00" oninput="calcDelta('tp')">
+              <input type="number" id="tp-contracts" value="1" min="1" step="1" oninput="onDeltaInput('tp','contracts')">
             </div>
           </div>
         </div>
-        <div class="delta-outputs">
-          <div class="delta-chip">
-            <div class="delta-chip-label">% Change</div>
-            <div class="delta-chip-val neutral" id="tp-pct">—</div>
+        <div class="delta-trio">
+          <div class="delta-field">
+            <div class="delta-field-label">Target Delta</div>
+            <div class="delta-inp" id="tp-delta-wrap">
+              <span class="pre">$</span>
+              <input type="number" id="tp-delta" min="0" step="0.01" placeholder="0.00" oninput="onDeltaInput('tp','delta')">
+            </div>
           </div>
-          <div class="delta-chip">
-            <div class="delta-chip-label">Dollar Amount</div>
-            <div class="delta-chip-val neutral" id="tp-dollar">—</div>
+          <div class="delta-field">
+            <div class="delta-field-label">% Change</div>
+            <div class="delta-inp" id="tp-pct-wrap">
+              <input type="number" id="tp-pct" step="0.01" placeholder="0.00" oninput="onDeltaInput('tp','pct')">
+              <span class="pre">%</span>
+            </div>
+          </div>
+          <div class="delta-field">
+            <div class="delta-field-label">Dollar Amount</div>
+            <div class="delta-inp" id="tp-dollar-wrap">
+              <span class="pre">$</span>
+              <input type="number" id="tp-dollar" step="0.01" placeholder="0.00" oninput="onDeltaInput('tp','dollar')">
+            </div>
           </div>
         </div>
       </div>
@@ -465,37 +457,43 @@
         </div>
       </div>
       <div class="pos-delta">
-        <div class="pos-delta-label">Delta Calculator</div>
-        <div class="delta-input-row">
+        <div class="pos-delta-label">Delta Calculator — edit any field</div>
+        <div class="delta-base-row">
           <div class="delta-field">
-            <div class="delta-field-label">Avg Cost</div>
-            <div class="delta-inp">
+            <div class="delta-field-label">Avg Cost / Contract</div>
+            <div class="delta-inp" id="ct-avg-wrap">
               <span class="pre">$</span>
-              <input type="number" id="ct-avg" min="0" step="0.01" placeholder="0.00" oninput="calcDelta('ct')">
+              <input type="number" id="ct-avg" min="0" step="0.01" placeholder="0.00" oninput="onDeltaInput('ct','avg')">
             </div>
           </div>
           <div class="delta-field">
-            <div class="delta-field-label">Contracts</div>
+            <div class="delta-field-label">No. of Contracts</div>
             <div class="delta-inp">
-              <input type="number" id="ct-contracts" value="1" min="1" step="1" oninput="calcDelta('ct')">
-            </div>
-          </div>
-          <div class="delta-field">
-            <div class="delta-field-label">Target Delta</div>
-            <div class="delta-inp">
-              <span class="pre">$</span>
-              <input type="number" id="ct-delta" min="0" step="0.01" placeholder="0.00" oninput="calcDelta('ct')">
+              <input type="number" id="ct-contracts" value="1" min="1" step="1" oninput="onDeltaInput('ct','contracts')">
             </div>
           </div>
         </div>
-        <div class="delta-outputs">
-          <div class="delta-chip">
-            <div class="delta-chip-label">% Change</div>
-            <div class="delta-chip-val neutral" id="ct-pct">—</div>
+        <div class="delta-trio">
+          <div class="delta-field">
+            <div class="delta-field-label">Target Delta</div>
+            <div class="delta-inp" id="ct-delta-wrap">
+              <span class="pre">$</span>
+              <input type="number" id="ct-delta" min="0" step="0.01" placeholder="0.00" oninput="onDeltaInput('ct','delta')">
+            </div>
           </div>
-          <div class="delta-chip">
-            <div class="delta-chip-label">Dollar Amount</div>
-            <div class="delta-chip-val neutral" id="ct-dollar">—</div>
+          <div class="delta-field">
+            <div class="delta-field-label">% Change</div>
+            <div class="delta-inp" id="ct-pct-wrap">
+              <input type="number" id="ct-pct" step="0.01" placeholder="0.00" oninput="onDeltaInput('ct','pct')">
+              <span class="pre">%</span>
+            </div>
+          </div>
+          <div class="delta-field">
+            <div class="delta-field-label">Dollar Amount</div>
+            <div class="delta-inp" id="ct-dollar-wrap">
+              <span class="pre">$</span>
+              <input type="number" id="ct-dollar" step="0.01" placeholder="0.00" oninput="onDeltaInput('ct','dollar')">
+            </div>
           </div>
         </div>
       </div>
@@ -515,37 +513,43 @@
         </div>
       </div>
       <div class="pos-delta">
-        <div class="pos-delta-label">Delta Calculator</div>
-        <div class="delta-input-row">
+        <div class="pos-delta-label">Delta Calculator — edit any field</div>
+        <div class="delta-base-row">
           <div class="delta-field">
-            <div class="delta-field-label">Avg Cost</div>
-            <div class="delta-inp">
+            <div class="delta-field-label">Avg Cost / Contract</div>
+            <div class="delta-inp" id="mp-avg-wrap">
               <span class="pre">$</span>
-              <input type="number" id="mp-avg" min="0" step="0.01" placeholder="0.00" oninput="calcDelta('mp')">
+              <input type="number" id="mp-avg" min="0" step="0.01" placeholder="0.00" oninput="onDeltaInput('mp','avg')">
             </div>
           </div>
           <div class="delta-field">
-            <div class="delta-field-label">Contracts</div>
+            <div class="delta-field-label">No. of Contracts</div>
             <div class="delta-inp">
-              <input type="number" id="mp-contracts" value="1" min="1" step="1" oninput="calcDelta('mp')">
-            </div>
-          </div>
-          <div class="delta-field">
-            <div class="delta-field-label">Target Delta</div>
-            <div class="delta-inp">
-              <span class="pre">$</span>
-              <input type="number" id="mp-delta" min="0" step="0.01" placeholder="0.00" oninput="calcDelta('mp')">
+              <input type="number" id="mp-contracts" value="1" min="1" step="1" oninput="onDeltaInput('mp','contracts')">
             </div>
           </div>
         </div>
-        <div class="delta-outputs">
-          <div class="delta-chip">
-            <div class="delta-chip-label">% Change</div>
-            <div class="delta-chip-val neutral" id="mp-pct">—</div>
+        <div class="delta-trio">
+          <div class="delta-field">
+            <div class="delta-field-label">Target Delta</div>
+            <div class="delta-inp" id="mp-delta-wrap">
+              <span class="pre">$</span>
+              <input type="number" id="mp-delta" min="0" step="0.01" placeholder="0.00" oninput="onDeltaInput('mp','delta')">
+            </div>
           </div>
-          <div class="delta-chip">
-            <div class="delta-chip-label">Dollar Amount</div>
-            <div class="delta-chip-val neutral" id="mp-dollar">—</div>
+          <div class="delta-field">
+            <div class="delta-field-label">% Change</div>
+            <div class="delta-inp" id="mp-pct-wrap">
+              <input type="number" id="mp-pct" step="0.01" placeholder="0.00" oninput="onDeltaInput('mp','pct')">
+              <span class="pre">%</span>
+            </div>
+          </div>
+          <div class="delta-field">
+            <div class="delta-field-label">Dollar Amount</div>
+            <div class="delta-inp" id="mp-dollar-wrap">
+              <span class="pre">$</span>
+              <input type="number" id="mp-dollar" step="0.01" placeholder="0.00" oninput="onDeltaInput('mp','dollar')">
+            </div>
           </div>
         </div>
       </div>
@@ -577,7 +581,7 @@
         <span class="formula-item-eq">daily risk ÷ 0.40</span>
         <span class="formula-item-val" id="f-tt">—</span>
       </div>
-      <div class="formula-item green" style="grid-column: span 2; border-right:none; padding-right:0;">
+      <div class="formula-item green span2">
         <span class="formula-item-label">Margin Position Size</span>
         <span class="formula-item-eq">(5R ÷ 0.60) − cash position · enters only after cash legs protected</span>
         <span class="formula-item-val" id="f-margin">—</span>
@@ -593,6 +597,7 @@
 </footer>
 
 <script>
+  /* ── UTILITIES ── */
   function fmt(n) {
     const abs = Math.abs(n);
     const str = '$' + abs.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -603,6 +608,8 @@
     return ((n / total) * 100).toFixed(1) + '% of account';
   }
   function getBalance() { return parseFloat(document.getElementById('balance').value) || 0; }
+  function v(id) { return parseFloat(document.getElementById(id).value); }
+  function set(id, val) { document.getElementById(id).value = isNaN(val) ? '' : val; }
 
   /* ── SIZING ── */
   function calculate(dailyRisk) {
@@ -613,19 +620,19 @@
     const margin    = (5 * dailyRisk / 0.60) - totalCash;
     const riskPct   = balance ? (dailyRisk / balance) * 100 : 0;
 
-    document.getElementById('out-risk').textContent      = fmt(dailyRisk);
-    document.getElementById('out-risk-pct').textContent  = pctOf(dailyRisk, balance);
-    document.getElementById('out-si1').textContent       = fmt(si1);
-    document.getElementById('out-si1-pct').textContent   = pctOf(si1, balance);
-    document.getElementById('out-si2').textContent       = fmt(si2);
-    document.getElementById('out-si2-pct').textContent   = pctOf(si2, balance);
-    document.getElementById('out-margin').textContent    = fmt(margin);
-    document.getElementById('f-dr').textContent          = fmt(dailyRisk);
-    document.getElementById('f-tt').textContent          = fmt(totalCash);
-    document.getElementById('f-si1').textContent         = fmt(si1);
-    document.getElementById('f-si2').textContent         = fmt(si2);
-    document.getElementById('f-margin').textContent      = fmt(margin);
-    document.getElementById('risk-hint').textContent     =
+    document.getElementById('out-risk').textContent     = fmt(dailyRisk);
+    document.getElementById('out-risk-pct').textContent = pctOf(dailyRisk, balance);
+    document.getElementById('out-si1').textContent      = fmt(si1);
+    document.getElementById('out-si1-pct').textContent  = pctOf(si1, balance);
+    document.getElementById('out-si2').textContent      = fmt(si2);
+    document.getElementById('out-si2-pct').textContent  = pctOf(si2, balance);
+    document.getElementById('out-margin').textContent   = fmt(margin);
+    document.getElementById('f-dr').textContent         = fmt(dailyRisk);
+    document.getElementById('f-tt').textContent         = fmt(totalCash);
+    document.getElementById('f-si1').textContent        = fmt(si1);
+    document.getElementById('f-si2').textContent        = fmt(si2);
+    document.getElementById('f-margin').textContent     = fmt(margin);
+    document.getElementById('risk-hint').textContent    =
       riskPct.toFixed(2) + '% of account · ' + fmt(dailyRisk) + ' max loss';
   }
 
@@ -646,33 +653,112 @@
   function onBalanceChange() { onPctChange(); }
   function resetRisk() { document.getElementById('risk-pct').value = '16.67'; onPctChange(); }
 
-  /* ── DELTA ── */
-  function calcDelta(prefix) {
-    const avg       = parseFloat(document.getElementById(prefix + '-avg').value);
-    const contracts = parseFloat(document.getElementById(prefix + '-contracts').value) || 1;
-    const delta     = parseFloat(document.getElementById(prefix + '-delta').value);
+  /* ── DELTA BIDIRECTIONAL LOGIC ── */
+  // Each position has: avg, contracts (base inputs) + delta, pct, dollar (trio — any drives the other two)
 
-    const pctEl    = document.getElementById(prefix + '-pct');
-    const dollarEl = document.getElementById(prefix + '-dollar');
+  function setColour(prefix, field, isPos) {
+    const wrap = document.getElementById(prefix + '-' + field + '-wrap');
+    if (!wrap) return;
+    wrap.classList.remove('val-pos', 'val-neg');
+    if (isPos !== null) wrap.classList.add(isPos ? 'val-pos' : 'val-neg');
+  }
 
-    if (!avg || isNaN(avg) || !delta || isNaN(delta)) {
-      pctEl.textContent    = '—';
-      dollarEl.textContent = '—';
-      pctEl.className    = 'delta-chip-val neutral';
-      dollarEl.className = 'delta-chip-val neutral';
+  function clearTrio(prefix) {
+    ['delta','pct','dollar'].forEach(f => {
+      document.getElementById(prefix + '-' + f).value = '';
+      const w = document.getElementById(prefix + '-' + f + '-wrap');
+      if (w) w.classList.remove('val-pos','val-neg');
+    });
+  }
+
+  function onDeltaInput(prefix, source) {
+    const avg       = v(prefix + '-avg');
+    const contracts = v(prefix + '-contracts') || 1;
+
+    // If avg or contracts changed, recompute based on whichever trio field is populated
+    if (source === 'avg' || source === 'contracts') {
+      // find which trio field has a value and recompute from it
+      const delta  = v(prefix + '-delta');
+      const pct    = v(prefix + '-pct');
+      const dollar = v(prefix + '-dollar');
+
+      if (!isNaN(delta) && delta !== undefined && document.getElementById(prefix+'-delta').value !== '') {
+        computeFromDelta(prefix, avg, contracts, delta);
+      } else if (!isNaN(pct) && pct !== undefined && document.getElementById(prefix+'-pct').value !== '') {
+        computeFromPct(prefix, avg, contracts, pct);
+      } else if (!isNaN(dollar) && dollar !== undefined && document.getElementById(prefix+'-dollar').value !== '') {
+        computeFromDollar(prefix, avg, contracts, dollar);
+      } else {
+        clearTrio(prefix);
+      }
       return;
     }
 
+    if (isNaN(avg) || avg <= 0) { clearTrio(prefix); return; }
+
+    if (source === 'delta') {
+      const delta = v(prefix + '-delta');
+      if (isNaN(delta)) { return; }
+      computeFromDelta(prefix, avg, contracts, delta);
+    }
+    else if (source === 'pct') {
+      const pct = v(prefix + '-pct');
+      if (isNaN(pct)) { return; }
+      computeFromPct(prefix, avg, contracts, pct);
+    }
+    else if (source === 'dollar') {
+      const dollar = v(prefix + '-dollar');
+      if (isNaN(dollar)) { return; }
+      computeFromDollar(prefix, avg, contracts, dollar);
+    }
+  }
+
+  function computeFromDelta(prefix, avg, contracts, delta) {
     const pctChange    = ((delta - avg) / avg) * 100;
     const dollarChange = (delta - avg) * 100 * contracts;
     const isPos        = pctChange >= 0;
-    const sign         = isPos ? '+' : '';
 
-    pctEl.textContent    = sign + pctChange.toFixed(2) + '%';
-    dollarEl.textContent = sign + '$' + Math.abs(dollarChange).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    setField(prefix + '-pct',    pctChange.toFixed(2));
+    setField(prefix + '-dollar', dollarChange.toFixed(2));
 
-    pctEl.className    = 'delta-chip-val ' + (isPos ? 'pos' : 'neg');
-    dollarEl.className = 'delta-chip-val ' + (isPos ? 'pos' : 'neg');
+    setColour(prefix, 'delta',  isPos);
+    setColour(prefix, 'pct',    isPos);
+    setColour(prefix, 'dollar', isPos);
+  }
+
+  function computeFromPct(prefix, avg, contracts, pct) {
+    const delta        = avg * (1 + pct / 100);
+    const dollarChange = (delta - avg) * 100 * contracts;
+    const isPos        = pct >= 0;
+
+    setField(prefix + '-delta',  delta.toFixed(2));
+    setField(prefix + '-dollar', dollarChange.toFixed(2));
+
+    setColour(prefix, 'delta',  isPos);
+    setColour(prefix, 'pct',    isPos);
+    setColour(prefix, 'dollar', isPos);
+  }
+
+  function computeFromDollar(prefix, avg, contracts, dollar) {
+    // dollar = (delta - avg) * 100 * contracts  →  delta = avg + dollar / (100 * contracts)
+    const delta        = avg + dollar / (100 * contracts);
+    const pctChange    = ((delta - avg) / avg) * 100;
+    const isPos        = dollar >= 0;
+
+    setField(prefix + '-delta', delta.toFixed(2));
+    setField(prefix + '-pct',   pctChange.toFixed(2));
+
+    setColour(prefix, 'delta',  isPos);
+    setColour(prefix, 'pct',    isPos);
+    setColour(prefix, 'dollar', isPos);
+  }
+
+  function setField(id, val) {
+    const el = document.getElementById(id);
+    // only update if this field is not the one currently being typed in
+    if (document.activeElement !== el) {
+      el.value = val;
+    }
   }
 
   onPctChange();
