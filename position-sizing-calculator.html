@@ -579,7 +579,8 @@
     </div>
     <div style="text-align:right">
       <div style="font-family:'Playfair Display',serif;font-size:40px;font-weight:900;letter-spacing:-0.02em;line-height:1;color:var(--muted);transition:color 0.2s" id="total-pnl-val">—</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:6px;opacity:0.7" id="total-pnl-sub">Enter delta values above</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--muted);margin-top:6px;transition:color 0.2s" id="total-pnl-r">—</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;opacity:0.7" id="total-pnl-sub">Enter delta values above</div>
     </div>
   </div>
 
@@ -801,6 +802,7 @@
     });
 
     const valEl  = document.getElementById('total-pnl-val');
+    const rEl    = document.getElementById('total-pnl-r');
     const barEl  = document.getElementById('total-pnl-bar');
     const subEl  = document.getElementById('total-pnl-sub');
     const lblEl  = document.getElementById('total-pnl-label');
@@ -808,24 +810,34 @@
     if (!anyValue) {
       valEl.textContent  = '—';
       valEl.style.color  = 'var(--muted)';
+      rEl.textContent    = '—';
+      rEl.style.color    = 'var(--muted)';
       barEl.style.background = 'var(--muted)';
       subEl.textContent  = 'Enter delta values above';
       lblEl.textContent  = 'Total P&L';
       return;
     }
 
-    const isPos = total >= 0;
-    const sign  = isPos ? '+' : '-';
-    const abs   = Math.abs(total);
-    const str   = sign + '$' + abs.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const dailyRisk = parseFloat(document.getElementById('risk-dollar').value) || 0;
+    const rVal      = dailyRisk > 0 ? (total / dailyRisk) : null;
+    const isPos     = total >= 0;
+    const sign      = isPos ? '+' : '-';
+    const abs       = Math.abs(total);
+    const str       = sign + '$' + abs.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     valEl.textContent  = str;
     valEl.style.color  = isPos ? 'var(--green-light)' : 'var(--red-light)';
     barEl.style.background = isPos ? 'var(--green)' : 'var(--red)';
     lblEl.textContent  = isPos ? 'Total Profit' : 'Total Loss';
-    subEl.textContent  = isPos
-      ? 'Combined gain if all targets hit'
-      : 'Combined loss if all stops hit';
+    subEl.textContent  = isPos ? 'Combined gain if all targets hit' : 'Combined loss if all stops hit';
+
+    if (rVal !== null) {
+      rEl.textContent = (rVal >= 0 ? '+' : '') + rVal.toFixed(2) + 'R';
+      rEl.style.color = isPos ? 'var(--green-light)' : 'var(--red-light)';
+    } else {
+      rEl.textContent = '—';
+      rEl.style.color = 'var(--muted)';
+    }
   }
 
   // Patch computeFrom functions to call updateTotalPnl after every calculation
