@@ -499,17 +499,17 @@
       </div>
     </div>
 
-    <!-- Margin Leg -->
+    <!-- Leveraged Position -->
     <div class="position-row">
       <div class="pos-sizing green-accent">
         <div class="pos-sizing-meta">
-          <div class="pos-sizing-type">Margin Position</div>
-          <div class="pos-sizing-name">Margin to Deploy</div>
-          <div class="pos-sizing-sub">(5R ÷ 0.60) − cash · after cash protected</div>
+          <div class="pos-sizing-type">Leveraged Position</div>
+          <div class="pos-sizing-name">Leveraged Position</div>
+          <div class="pos-sizing-sub">Account balance − test position − confirmation of thesis</div>
         </div>
         <div>
           <div class="pos-sizing-val" id="out-margin">$0</div>
-          <div class="pos-sizing-pct">enters after cash protected</div>
+          <div class="pos-sizing-pct" id="out-margin-r">—</div>
         </div>
       </div>
       <div class="pos-delta">
@@ -609,8 +609,8 @@
         <span class="formula-item-val" id="f-tt">—</span>
       </div>
       <div class="formula-item green span2">
-        <span class="formula-item-label">Margin Position Size</span>
-        <span class="formula-item-eq">(5R ÷ 0.60) − cash position · enters only after cash legs protected</span>
+        <span class="formula-item-label">Leveraged Position</span>
+        <span class="formula-item-eq">account balance − test position − confirmation of thesis</span>
         <span class="formula-item-val" id="f-margin">—</span>
       </div>
     </div>
@@ -644,7 +644,8 @@
     const totalCash = dailyRisk / 0.40;
     const si1       = dailyRisk;
     const si2       = totalCash - dailyRisk;
-    const margin    = (5 * dailyRisk / 0.60) - totalCash;
+    const leveraged = balance - si1 - si2;
+    const rMultiple = dailyRisk > 0 ? (leveraged / dailyRisk) : 0;
     const riskPct   = balance ? (dailyRisk / balance) * 100 : 0;
 
     document.getElementById('out-risk').textContent     = fmt(dailyRisk);
@@ -653,12 +654,13 @@
     document.getElementById('out-si1-pct').textContent  = pctOf(si1, balance);
     document.getElementById('out-si2').textContent      = fmt(si2);
     document.getElementById('out-si2-pct').textContent  = pctOf(si2, balance);
-    document.getElementById('out-margin').textContent   = fmt(margin);
+    document.getElementById('out-margin').textContent   = fmt(leveraged);
+    document.getElementById('out-margin-r').textContent = (rMultiple >= 0 ? '' : '-') + Math.abs(rMultiple).toFixed(2) + 'R multiplier';
     document.getElementById('f-dr').textContent         = fmt(dailyRisk);
     document.getElementById('f-tt').textContent         = fmt(totalCash);
     document.getElementById('f-si1').textContent        = fmt(si1);
     document.getElementById('f-si2').textContent        = fmt(si2);
-    document.getElementById('f-margin').textContent     = fmt(margin);
+    document.getElementById('f-margin').textContent     = fmt(leveraged);
     document.getElementById('risk-hint').textContent    =
       riskPct.toFixed(2) + '% of account · ' + fmt(dailyRisk) + ' max loss';
   }
