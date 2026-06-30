@@ -163,6 +163,84 @@
   .risk-summary-sub { font-size:11px; color:var(--muted); margin-top:3px; opacity:0.6; }
   .risk-summary-val { font-family:'Playfair Display',serif; font-size:32px; font-weight:900; color:var(--red-light); letter-spacing:-0.02em; }
 
+  /* ── RISK MODE SELECTOR ── */
+  .mode-panel {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 4px; padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+  .mode-panel-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 22px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .mode-panel-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.2em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .mode-select-wrap {
+    position: relative;
+    min-width: 280px;
+  }
+  .mode-select-wrap::after {
+    content: '▾';
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    color: var(--gold); font-size: 12px; pointer-events: none;
+  }
+  select#risk-mode {
+    appearance: none; -webkit-appearance: none;
+    width: 100%;
+    background: var(--navy); border: 1px solid var(--navy-border);
+    border-radius: 3px; padding: 12px 38px 12px 16px;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--white); cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  select#risk-mode:focus { outline: none; border-color: var(--gold); }
+  select#risk-mode option { background: var(--navy-card); color: var(--white); }
+
+  .mode-desc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .mode-desc-item {
+    padding: 4px 24px 4px 0;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    opacity: 0.4;
+    transition: opacity 0.2s;
+  }
+  .mode-desc-item:last-child { border-right: none; padding-right: 0; padding-left: 24px; }
+  .mode-desc-item:nth-child(2) { padding-left: 24px; padding-right: 24px; }
+  .mode-desc-item.active { opacity: 1; }
+  .mode-desc-tag {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .mode-desc-item:nth-child(1) .mode-desc-tag { color: var(--red-light); }
+  .mode-desc-item:nth-child(2) .mode-desc-tag { color: var(--gold-light); }
+  .mode-desc-item:nth-child(3) .mode-desc-tag { color: var(--green-light); }
+  .mode-desc-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .leverage-lock-banner {
+    display: none;
+    margin-top: 18px;
+    background: var(--red-bg); border: 1px solid var(--red-border);
+    border-radius: 3px; padding: 14px 18px;
+    font-size: 12px; color: var(--red-light); line-height: 1.5;
+  }
+  .leverage-lock-banner.show { display: block; }
+
+  .leverage-proof-banner {
+    display: none;
+    margin-top: 18px;
+    background: rgba(201,168,76,0.06); border: 1px solid var(--gold);
+    border-radius: 3px; padding: 14px 18px;
+    font-size: 12px; color: var(--gold-light); line-height: 1.5;
+  }
+  .leverage-proof-banner.show { display: block; }
+
   /* ── POSITION ROWS ── */
   .positions { display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
 
@@ -186,16 +264,19 @@
   .pos-sizing.gold-accent { border-left: 3px solid var(--gold); }
   .pos-sizing.muted-accent { border-left: 3px solid var(--muted); }
   .pos-sizing.green-accent { background: var(--green-bg); border-left: 3px solid var(--green); }
+  .pos-sizing.locked-accent { background: var(--red-bg); border-left: 3px solid var(--red); }
 
   .pos-sizing-meta { flex: 1; }
   .pos-sizing-type { font-size:10px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
   .pos-sizing.gold-accent .pos-sizing-type { color: var(--gold); }
   .pos-sizing.green-accent .pos-sizing-type { color: var(--green-light); }
+  .pos-sizing.locked-accent .pos-sizing-type { color: var(--red-light); }
   .pos-sizing-name { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--white); margin-bottom:2px; }
   .pos-sizing-sub { font-size:11px; color:var(--muted); opacity:0.6; }
   .pos-sizing-val { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--white); letter-spacing:-0.02em; text-align:right; }
   .pos-sizing.gold-accent .pos-sizing-val { color: var(--gold-light); }
   .pos-sizing.green-accent .pos-sizing-val { color: var(--green-light); }
+  .pos-sizing.locked-accent .pos-sizing-val { color: var(--red-light); }
   .pos-sizing-pct { font-size:11px; color:var(--muted); text-align:right; margin-top:2px; opacity:0.6; }
 
   /* ── DELTA PANEL ── */
@@ -203,7 +284,9 @@
     background: var(--navy);
     padding: 20px 24px;
     display: flex; flex-direction: column; gap: 14px;
+    transition: opacity 0.2s;
   }
+  .pos-delta.disabled { opacity: 0.35; pointer-events: none; }
 
   .pos-delta-label {
     font-size: 10px; font-weight: 500; letter-spacing: 0.16em;
@@ -306,6 +389,11 @@
     .container { padding: 40px 24px 100px; }
     .hero h1 { font-size: 36px; }
     .footer { padding: 14px 24px; }
+    .mode-panel-top { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .mode-select-wrap { width: 100%; min-width: 0; }
+    .mode-desc-grid { grid-template-columns: 1fr; gap: 14px; }
+    .mode-desc-item { border-right: none; padding: 0 !important; opacity: 1; }
+    .mode-desc-item:not(.active) { display: none; }
   }
 </style>
 </head>
@@ -381,6 +469,40 @@
         <div class="risk-summary-val" id="out-risk">$0</div>
         <div style="font-size:11px;color:var(--muted);text-align:right;margin-top:4px;opacity:0.6" id="out-risk-pct">—</div>
       </div>
+    </div>
+  </div>
+
+  <!-- RISK MODE SELECTOR -->
+  <div class="mode-panel">
+    <div class="mode-panel-top">
+      <div class="mode-panel-label">Leveraged Position — Risk Mode</div>
+      <div class="mode-select-wrap">
+        <select id="risk-mode" onchange="onModeChange()">
+          <option value="lowest">1 · Lowest Risk (drawdown, &lt;2 consecutive wins)</option>
+          <option value="proof">2 · Proof Phase (post 2 wins, 1.5x leveraged)</option>
+          <option value="ideal" selected>3 · Ideal Setup Risk (standard)</option>
+        </select>
+      </div>
+    </div>
+    <div class="mode-desc-grid">
+      <div class="mode-desc-item" id="mode-desc-lowest">
+        <div class="mode-desc-tag">Lowest Risk</div>
+        <div class="mode-desc-text">In a &gt;5 trade drawdown. Leveraged position is disabled ($0) until 2 consecutive wins are logged.</div>
+      </div>
+      <div class="mode-desc-item" id="mode-desc-proof">
+        <div class="mode-desc-tag">Proof Phase</div>
+        <div class="mode-desc-text">After 2 consecutive wins. Leveraged position = 1.5x Confirmation of Thesis, until the next 5-trade losing streak.</div>
+      </div>
+      <div class="mode-desc-item" id="mode-desc-ideal">
+        <div class="mode-desc-tag">Ideal Setup Risk</div>
+        <div class="mode-desc-text">Standard formula. Leveraged position = account balance − test position − confirmation of thesis.</div>
+      </div>
+    </div>
+    <div class="leverage-lock-banner" id="lock-banner">
+      Leveraged position is locked at $0 in Lowest Risk mode. The leftover balance stays uncommitted until 2 consecutive wins are logged and you move to Proof Phase.
+    </div>
+    <div class="leverage-proof-banner" id="proof-banner">
+      Proof Phase active: Leveraged position is being recalculated as 1.5× your Confirmation of Thesis position, not the standard balance split.
     </div>
   </div>
 
@@ -501,18 +623,18 @@
 
     <!-- Leveraged Position -->
     <div class="position-row">
-      <div class="pos-sizing green-accent">
+      <div class="pos-sizing green-accent" id="pos-sizing-leveraged">
         <div class="pos-sizing-meta">
-          <div class="pos-sizing-type">Leveraged Position</div>
+          <div class="pos-sizing-type" id="leveraged-type">Leveraged Position</div>
           <div class="pos-sizing-name">Leveraged Position</div>
-          <div class="pos-sizing-sub">Account balance − test position − confirmation of thesis</div>
+          <div class="pos-sizing-sub" id="leveraged-sub">Account balance − test position − confirmation of thesis</div>
         </div>
         <div>
           <div class="pos-sizing-val" id="out-margin">$0</div>
           <div class="pos-sizing-pct" id="out-margin-r">—</div>
         </div>
       </div>
-      <div class="pos-delta">
+      <div class="pos-delta" id="leveraged-delta-panel">
         <div class="pos-delta-label">Delta Calculator — edit any field</div>
         <div class="delta-base-row">
           <div class="delta-field">
@@ -609,8 +731,8 @@
         <span class="formula-item-val" id="f-tt">—</span>
       </div>
       <div class="formula-item green span2">
-        <span class="formula-item-label">Leveraged Position</span>
-        <span class="formula-item-eq">account balance − test position − confirmation of thesis</span>
+        <span class="formula-item-label" id="f-margin-label">Leveraged Position</span>
+        <span class="formula-item-eq" id="f-margin-eq">account balance − test position − confirmation of thesis</span>
         <span class="formula-item-val" id="f-margin">—</span>
       </div>
     </div>
@@ -637,6 +759,47 @@
   function getBalance() { return parseFloat(document.getElementById('balance').value) || 0; }
   function v(id) { return parseFloat(document.getElementById(id).value); }
   function set(id, val) { document.getElementById(id).value = isNaN(val) ? '' : val; }
+  function getMode() { return document.getElementById('risk-mode').value; }
+
+  /* ── RISK MODE UI ── */
+  function onModeChange() {
+    const mode = getMode();
+
+    // highlight active description
+    ['lowest','proof','ideal'].forEach(m => {
+      document.getElementById('mode-desc-' + m).classList.toggle('active', m === mode);
+    });
+
+    document.getElementById('lock-banner').classList.toggle('show', mode === 'lowest');
+    document.getElementById('proof-banner').classList.toggle('show', mode === 'proof');
+
+    const sizingEl   = document.getElementById('pos-sizing-leveraged');
+    const deltaPanel = document.getElementById('leveraged-delta-panel');
+    const typeEl     = document.getElementById('leveraged-type');
+    const subEl      = document.getElementById('leveraged-sub');
+
+    sizingEl.classList.remove('green-accent', 'locked-accent');
+    if (mode === 'lowest') {
+      sizingEl.classList.add('locked-accent');
+      typeEl.textContent = 'Locked · Lowest Risk';
+      subEl.textContent  = 'Disabled until 2 consecutive wins';
+      deltaPanel.classList.add('disabled');
+    } else if (mode === 'proof') {
+      sizingEl.classList.add('green-accent');
+      typeEl.textContent = 'Leveraged Position · Proof Phase';
+      subEl.textContent  = '1.5× Confirmation of Thesis';
+      deltaPanel.classList.remove('disabled');
+    } else {
+      sizingEl.classList.add('green-accent');
+      typeEl.textContent = 'Leveraged Position';
+      subEl.textContent  = 'Account balance − test position − confirmation of thesis';
+      deltaPanel.classList.remove('disabled');
+    }
+
+    // re-run the calc with current daily risk
+    const dollar = parseFloat(document.getElementById('risk-dollar').value) || 0;
+    calculate(dollar);
+  }
 
   /* ── SIZING ── */
   function calculate(dailyRisk) {
@@ -644,7 +807,25 @@
     const totalCash = dailyRisk / 0.40;
     const si1       = dailyRisk;
     const si2       = totalCash - dailyRisk;
-    const leveraged = balance - si1 - si2;
+    const mode      = getMode();
+
+    let leveraged;
+    let marginEq, marginLabel;
+
+    if (mode === 'lowest') {
+      leveraged   = 0;
+      marginEq    = 'locked at $0 (lowest risk mode)';
+      marginLabel = 'Leveraged Position (Locked)';
+    } else if (mode === 'proof') {
+      leveraged   = si2 * 1.5;
+      marginEq    = '1.5 × confirmation of thesis';
+      marginLabel = 'Leveraged Position (Proof Phase)';
+    } else {
+      leveraged   = balance - si1 - si2;
+      marginEq    = 'account balance − test position − confirmation of thesis';
+      marginLabel = 'Leveraged Position';
+    }
+
     const rMultiple = dailyRisk > 0 ? (leveraged / dailyRisk) : 0;
     const riskPct   = balance ? (dailyRisk / balance) * 100 : 0;
 
@@ -661,6 +842,8 @@
     document.getElementById('f-si1').textContent        = fmt(si1);
     document.getElementById('f-si2').textContent        = fmt(si2);
     document.getElementById('f-margin').textContent     = fmt(leveraged);
+    document.getElementById('f-margin-eq').textContent  = marginEq;
+    document.getElementById('f-margin-label').textContent = marginLabel;
     document.getElementById('risk-hint').textContent    =
       riskPct.toFixed(2) + '% of account · ' + fmt(dailyRisk) + ' max loss';
   }
@@ -701,6 +884,8 @@
   }
 
   function onDeltaInput(prefix, source) {
+    if (prefix === 'mp' && getMode() === 'lowest') return; // locked
+
     const avg       = v(prefix + '-avg');
     const contracts = v(prefix + '-contracts') || 1;
 
@@ -796,6 +981,7 @@
     let anyValue = false;
 
     prefixes.forEach(prefix => {
+      if (prefix === 'mp' && getMode() === 'lowest') return; // locked, excluded
       const dollar = parseFloat(document.getElementById(prefix + '-dollar').value);
       if (!isNaN(dollar) && document.getElementById(prefix + '-dollar').value !== '') {
         total += dollar;
@@ -851,6 +1037,7 @@
   computeFromPct   = function(p,a,c,pc) { _fromPct(p,a,c,pc);   updateTotalPnl(); };
   computeFromDollar= function(p,a,c,dl) { _fromDollar(p,a,c,dl);updateTotalPnl(); };
 
+  onModeChange();
   onPctChange();
 </script>
 </body>
