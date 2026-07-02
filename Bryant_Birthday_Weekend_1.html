@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bryant's Birthday Weekend — Corpus Christi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0a1f2b;
+    --navy:#0e2733;
+    --bay:#123542;
+    --gold:#d3a94e;
+    --gold-bright:#e8c877;
+    --coral:#e3714f;
+    --sand:#c9bfa0;
+    --cream:#f4ecd8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(211,169,78,0.10), transparent 45%),
+      radial-gradient(ellipse at 80% 0%, rgba(227,113,79,0.08), transparent 40%),
+      var(--navy-deep);
+    color:var(--cream);
+    font-family:'Work Sans', sans-serif;
+    font-weight:300;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px 100px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:90px 24px 70px;
+    text-align:center;
+    overflow:hidden;
+    border-bottom:1px solid rgba(211,169,78,0.25);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 50% 120%, rgba(211,169,78,0.18), transparent 60%);
+    pointer-events:none;
+  }
+  .burst{
+    width:120px; height:120px;
+    margin:0 auto 28px;
+    opacity:0.95;
+  }
+  .eyebrow{
+    font-family:'Work Sans', sans-serif;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--gold);
+    margin-bottom:18px;
+    font-weight:500;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(38px, 7vw, 58px);
+    letter-spacing:-0.01em;
+    color:var(--cream);
+    margin-bottom:14px;
+  }
+  h1 em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--gold-bright);
+  }
+  .hero-sub{
+    font-size:16px;
+    color:var(--sand);
+    letter-spacing:0.02em;
+  }
+  .hero-dates{
+    display:inline-block;
+    margin-top:26px;
+    padding:8px 22px;
+    border:1px solid rgba(211,169,78,0.4);
+    border-radius:999px;
+    font-size:13px;
+    letter-spacing:0.08em;
+    color:var(--gold-bright);
+  }
+
+  /* ---------- DAY SECTIONS ---------- */
+  .day{
+    position:relative;
+    padding:64px 0 0;
+  }
+  .day-head{
+    display:flex;
+    align-items:baseline;
+    gap:18px;
+    margin-bottom:8px;
+  }
+  .day-tag{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--navy-deep);
+    background:var(--gold);
+    padding:4px 14px;
+    border-radius:3px;
+    letter-spacing:0.03em;
+    white-space:nowrap;
+  }
+  .day-date{
+    font-size:13px;
+    color:var(--sand);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+  .day-title{
+    font-family:'Fraunces', serif;
+    font-size:clamp(26px,4vw,34px);
+    font-weight:600;
+    color:var(--cream);
+    margin:10px 0 34px;
+    letter-spacing:-0.01em;
+  }
+
+  .stop{
+    position:relative;
+    display:grid;
+    grid-template-columns:88px 1fr;
+    gap:22px;
+    padding-bottom:34px;
+  }
+  .stop:not(:last-child)::before{
+    content:"";
+    position:absolute;
+    left:43px; top:30px; bottom:-4px;
+    width:1px;
+    background:linear-gradient(to bottom, rgba(211,169,78,0.5), rgba(211,169,78,0.05));
+  }
+  .stop-time{
+    font-family:'Fraunces', serif;
+    font-size:14px;
+    font-weight:600;
+    color:var(--gold-bright);
+    text-align:right;
+    padding-top:2px;
+    line-height:1.3;
+  }
+  .stop-dot{
+    position:absolute;
+    left:38px; top:5px;
+    width:11px; height:11px;
+    border-radius:50%;
+    background:var(--navy-deep);
+    border:2px solid var(--gold);
+  }
+  .stop-body h3{
+    font-family:'Fraunces', serif;
+    font-size:19px;
+    font-weight:600;
+    color:var(--cream);
+    margin-bottom:6px;
+  }
+  .stop-body p{
+    font-size:14.5px;
+    color:var(--sand);
+    font-weight:300;
+    max-width:52ch;
+  }
+  .stop-body .addr{
+    display:inline-block;
+    margin-top:8px;
+    font-size:12px;
+    letter-spacing:0.03em;
+    color:var(--coral);
+  }
+  .badge{
+    display:inline-block;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--navy-deep);
+    background:var(--sand);
+    padding:2px 9px;
+    border-radius:999px;
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .badge.hot{background:var(--coral); color:var(--cream);}
+  .badge.gold{background:var(--gold); color:var(--navy-deep);}
+
+  .price{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:10px;
+    font-size:13px;
+    color:var(--gold-bright);
+    font-weight:500;
+  }
+  .price .amt{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+  }
+  .book-link{
+    display:inline-block;
+    margin-top:10px;
+    margin-left:14px;
+    font-size:12.5px;
+    color:var(--cream);
+    text-decoration:none;
+    border-bottom:1px solid var(--coral);
+    padding-bottom:1px;
+  }
+  .book-link:hover{color:var(--coral);}
+
+  /* ---------- COST SUMMARY TABLE ---------- */
+  .cost-summary{
+    margin-top:80px;
+  }
+  .cost-summary h4{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    font-weight:600;
+    color:var(--cream);
+    margin-bottom:6px;
+  }
+  .cost-summary .sub{
+    font-size:13px;
+    color:var(--sand);
+    margin-bottom:26px;
+  }
+  table.costs{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  table.costs th{
+    text-align:left;
+    font-family:'Work Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--gold);
+    padding:0 10px 10px 0;
+    border-bottom:1px solid rgba(211,169,78,0.35);
+    font-weight:600;
+  }
+  table.costs td{
+    padding:13px 10px 13px 0;
+    border-bottom:1px solid rgba(201,191,160,0.12);
+    color:var(--sand);
+    vertical-align:top;
+  }
+  table.costs td.item{color:var(--cream); font-weight:400;}
+  table.costs td.amount{
+    color:var(--gold-bright);
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    white-space:nowrap;
+    text-align:right;
+  }
+  table.costs a{color:var(--coral); text-decoration:none; border-bottom:1px solid rgba(227,113,79,0.4);}
+  table.costs a:hover{color:var(--gold-bright);}
+  table.costs tfoot td{
+    border-bottom:none;
+    border-top:2px solid var(--gold);
+    padding-top:18px;
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    font-weight:600;
+    color:var(--cream);
+  }
+  table.costs tfoot td.amount{color:var(--gold-bright); font-size:19px;}
+  .cost-note{
+    font-size:12px;
+    color:rgba(201,191,160,0.65);
+    margin-top:14px;
+    line-height:1.6;
+  }
+
+  .divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:66px 0 0;
+    opacity:0.55;
+  }
+  .divider .line{flex:1; height:1px; background:rgba(211,169,78,0.3);}
+  .divider svg{width:22px; height:22px;}
+
+  /* ---------- NOTES ---------- */
+  .notes{
+    margin-top:80px;
+    padding:32px 28px;
+    background:rgba(211,169,78,0.06);
+    border:1px solid rgba(211,169,78,0.25);
+    border-radius:8px;
+  }
+  .notes h4{
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    color:var(--gold-bright);
+    margin-bottom:14px;
+    letter-spacing:0.02em;
+  }
+  .notes ul{list-style:none;}
+  .notes li{
+    font-size:13.5px;
+    color:var(--sand);
+    padding-left:18px;
+    position:relative;
+    margin-bottom:10px;
+  }
+  .notes li::before{
+    content:"—";
+    position:absolute; left:0;
+    color:var(--coral);
+  }
+
+  footer{
+    text-align:center;
+    margin-top:70px;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:rgba(201,191,160,0.4);
+  }
+
+  @media (max-width:520px){
+    .hero{ padding:60px 18px 45px; }
+    .wrap{ padding:0 16px 80px; }
+    .stop{grid-template-columns:56px 1fr; gap:14px;}
+    .stop-dot{left:22px;}
+    .stop:not(:last-child)::before{left:27px;}
+    .stop-time{font-size:12px;}
+    .day-title{margin-bottom:24px;}
+
+    table.costs thead{display:none;}
+    table.costs, table.costs tbody, table.costs tr, table.costs td{
+      display:block; width:100%;
+    }
+    table.costs tr{
+      padding:14px 0;
+      border-bottom:1px solid rgba(201,191,160,0.15);
+    }
+    table.costs td{ padding:2px 0; border:none; }
+    table.costs td.item{ font-size:14px; margin-bottom:4px; }
+    table.costs td.amount{ text-align:left; font-size:15px; }
+    table.costs td:not(.item):not(.amount):empty{ display:none; }
+    table.costs tfoot tr{
+      display:flex; justify-content:space-between; align-items:baseline;
+      border-bottom:none; padding-top:16px;
+    }
+    table.costs tfoot td:last-child{ padding-top:0; }
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .stop{ animation: rise 0.6s ease both; }
+    .stop:nth-child(1){animation-delay:.02s}
+    .stop:nth-child(2){animation-delay:.08s}
+    .stop:nth-child(3){animation-delay:.14s}
+    .stop:nth-child(4){animation-delay:.20s}
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateY(8px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="burst" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#d3a94e" stroke-width="2" fill="none" opacity="0.9">
+      <circle cx="100" cy="100" r="6" fill="#e8c877" stroke="none"/>
+      <g id="rays"></g>
+    </g>
+    <script></script>
+  </svg>
+  <div class="eyebrow">Corpus Christi · Texas Gulf Coast</div>
+  <h1>Bryant's <em>Birthday</em> Weekend</h1>
+  <div class="hero-sub">Three days on the bay — art, fireworks, and open water</div>
+  <div class="hero-dates">JULY 3 – 5, 2026</div>
+</div>
+
+<div class="wrap">
+
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="day-head">
+      <span class="day-tag">DAY ONE</span>
+      <span class="day-date">Friday, July 3</span>
+    </div>
+    <h2 class="day-title">Birthday Kickoff</h2>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">5:00<br>PM</div>
+      <div class="stop-body">
+        <span class="badge">Dinner</span>
+        <h3>Water Street Oyster Bar</h3>
+        <p>Early birthday dinner at a longtime local seafood institution near downtown — Gulf oysters, fresh catch, easy walk to everything after.</p>
+        <span class="addr">309 N Water St</span><br>
+        <span class="price">~<span class="amt">$35–45</span>/person</span>
+        <a class="book-link" href="http://www.waterstmarketcc.com/oyster-bar-cc/" target="_blank">Reserve →</a>
+      </div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">7:00<br>PM</div>
+      <div class="stop-body">
+        <span class="badge gold">Art</span>
+        <h3>First Friday ArtWalk</h3>
+        <p>Downtown streets fill with local artists, live music, and food vendors. Runs 6–10 PM, so arriving at 7 catches it in full swing.</p>
+        <span class="addr">Downtown Corpus Christi</span><br>
+        <span class="price"><span class="amt">Free</span></span>
+      </div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">9:30<br>PM</div>
+      <div class="stop-body">
+        <span class="badge hot">Adults</span>
+        <h3>The Annex</h3>
+        <p>Close the night with a curated cocktail list on a beautiful outdoor patio, right in the middle of downtown.</p>
+        <span class="addr">312 S Chaparral St</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="line"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#d3a94e" stroke-width="1.5"><path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0 4 4 6 0" stroke-linecap="round"/></svg>
+    <div class="line"></div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="day-head">
+      <span class="day-tag">DAY TWO</span>
+      <span class="day-date">Saturday, July 4</span>
+    </div>
+    <h2 class="day-title">Big Bang &amp; GlowRow</h2>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">9:00<br>AM</div>
+      <div class="stop-body">
+        <span class="badge">Morning</span>
+        <h3>Corpus Christi Marina</h3>
+        <p>Boat rentals and calm-water views in the early morning light, before the holiday crowds build downtown. Coastal Bend Cruisers runs self-driven electric boats right from the marina, hourly, 1-hour minimum.</p>
+        <span class="addr">400A N Shoreline Blvd</span><br>
+        <span class="price">~<span class="amt">$65–90</span>/hour <span style="color:var(--sand); font-weight:400;">(per group, not per person)</span></span>
+        <a class="book-link" href="https://coastalbendcruisers.com/rentals" target="_blank">Call to reserve →</a>
+      </div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">12:00<br>PM</div>
+      <div class="stop-body">
+        <span class="badge">Lunch</span>
+        <h3>Water Street Central Kitchen</h3>
+        <p>A relaxed cafe stop downtown — known for pastries, brunch plates, and bottomless coffee.</p>
+        <span class="addr">320 Lomax St</span><br>
+        <span class="price">~<span class="amt">$15–22</span>/person</span>
+      </div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">6:30<br>PM</div>
+      <div class="stop-body">
+        <span class="badge gold">Depart</span>
+        <h3>Drive to Port Aransas</h3>
+        <p>Allow 45–60 minutes with ferry traffic on the 4th — worth leaving extra buffer.</p>
+      </div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">8:00<br>PM</div>
+      <div class="stop-body">
+        <span class="badge hot">Fireworks</span>
+        <h3>GlowRow Illuminated Kayak Tour</h3>
+        <p>A 1.5-hour guided glow-kayak tour through the marina, timed to watch the Mayor's Big Bang fireworks light up the bay from the water. <strong style="color:var(--gold-bright)">Reserve ahead of time — tours sell out around the 4th.</strong></p>
+        <span class="addr">Port Aransas · Lighthouse Lakes launch</span><br>
+        <span class="price">~<span class="amt">$65–70</span>/person</span>
+        <a class="book-link" href="https://glowrow.com/book/" target="_blank">Book online →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="line"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#d3a94e" stroke-width="1.5"><path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0 4 4 6 0" stroke-linecap="round"/></svg>
+    <div class="line"></div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="day-head">
+      <span class="day-tag">DAY THREE</span>
+      <span class="day-date">Sunday, July 5</span>
+    </div>
+    <h2 class="day-title">Recovery Day</h2>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">11:00<br>AM</div>
+      <div class="stop-body">
+        <span class="badge">Beach</span>
+        <h3>Padre Island National Seashore</h3>
+        <p>Free entry July 3–5 in honor of America's 250th (normally ~$25/vehicle for a 7-day pass). Miles of undeveloped coastline — beach, birding, fishing, or just quiet.</p>
+        <span class="price"><span class="amt">Free</span> this weekend</span>
+      </div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-dot"></div>
+      <div class="stop-time">6:30<br>PM</div>
+      <div class="stop-body">
+        <span class="badge">Dinner</span>
+        <h3>Executive Surf Club</h3>
+        <p>A casual close to the weekend downtown — good food, good patio, easy way to wind the birthday trip down.</p>
+        <span class="addr">306 N Chaparral St</span><br>
+        <span class="price">~<span class="amt">$20–30</span>/person</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cost-summary">
+    <h4>Estimated Costs</h4>
+    <div class="sub">Per person, unless noted — the boat rental is a flat hourly rate split across the group.</div>
+    <table class="costs">
+      <thead>
+        <tr><th>Item</th><th>Book</th><th style="text-align:right">Est. Cost</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="item">Fri — Dinner, Water Street Oyster Bar</td>
+          <td><a href="http://www.waterstmarketcc.com/oyster-bar-cc/" target="_blank">Reserve</a></td>
+          <td class="amount">$35–45</td>
+        </tr>
+        <tr>
+          <td class="item">Fri — First Friday ArtWalk</td>
+          <td>—</td>
+          <td class="amount">Free</td>
+        </tr>
+        <tr>
+          <td class="item">Sat — Electric boat, Coastal Bend Cruisers <span style="color:var(--sand); font-size:11px;">(group, per hr)</span></td>
+          <td><a href="https://coastalbendcruisers.com/rentals" target="_blank">Call (361) 446-0207</a></td>
+          <td class="amount">$65–90</td>
+        </tr>
+        <tr>
+          <td class="item">Sat — Lunch, Water Street Central Kitchen</td>
+          <td>—</td>
+          <td class="amount">$15–22</td>
+        </tr>
+        <tr>
+          <td class="item">Sat — GlowRow Kayak Tour</td>
+          <td><a href="https://glowrow.com/book/" target="_blank">Book online</a></td>
+          <td class="amount">$65–70</td>
+        </tr>
+        <tr>
+          <td class="item">Sun — Padre Island National Seashore</td>
+          <td><a href="https://www.nps.gov/pais/index.htm" target="_blank">NPS site</a></td>
+          <td class="amount">Free*</td>
+        </tr>
+        <tr>
+          <td class="item">Sun — Dinner, Executive Surf Club</td>
+          <td>—</td>
+          <td class="amount">$20–30</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Estimated total per person</td>
+          <td></td>
+          <td class="amount">$135–167</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="cost-note">*Padre Island entry is normally ~$25/vehicle for a 7-day pass — waived July 3–5 for America's 250th. The boat rental is priced per group per hour (not per person) — split it by however many of you go out. Prices are estimates and can shift closer to the holiday — confirm at booking.</div>
+  </div>
+
+  <div class="notes">
+    <h4>Good to Know</h4>
+    <ul>
+      <li>Downtown parking fills fast Friday and Saturday — free shuttle runs from City Hall on the 4th</li>
+      <li>GlowRow kayak tour is reservation-only, so lock it in ahead of time</li>
+      <li>Ferry lines into Port Aransas get heavy on the 4th — build in extra drive time</li>
+    </ul>
+  </div>
+
+  <footer>Corpus Christi, Texas — Happy Birthday, Bryant</footer>
+</div>
+
+<script>
+  // Draw firework rays for the hero burst
+  const rays = document.getElementById('rays');
+  const n = 16;
+  for(let i=0;i<n;i++){
+    const angle = (i/n) * Math.PI * 2;
+    const x1 = 100 + Math.cos(angle)*14;
+    const y1 = 100 + Math.sin(angle)*14;
+    const len = (i % 2 === 0) ? 46 : 30;
+    const x2 = 100 + Math.cos(angle)*len;
+    const y2 = 100 + Math.sin(angle)*len;
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1",x1); line.setAttribute("y1",y1);
+    line.setAttribute("x2",x2); line.setAttribute("y2",y2);
+    line.setAttribute("stroke-linecap","round");
+    rays.appendChild(line);
+  }
+</script>
+
+</body>
+</html>
